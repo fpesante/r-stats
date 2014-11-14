@@ -1,0 +1,127 @@
+##Applied Econometrics
+##http://www.econ.uiuc.edu/~econ472/tutorial2.html
+
+US90<-read.csv("C:/Users/francisco.pesante/Documents/2014/r scripts/Applied-Econometrics/US90.csv", header=T)
+year<-US90$year
+gdpgr<-US90$gdpgr
+consgr<-US90$consgr
+invgr<-US90$invgr
+unemp<-US90$unemp
+gdpcapgr<-US90$gdpcapgr
+inf<-US90$inf
+producgr<-US90$producgr 
+
+##obtain the minimum, 1st quartile, median, 3rd quartile, and maximum of each variable 
+summary(US90)
+
+##standard deviation of the series
+sd(US90)
+
+##interested in a single variable
+summary(gdpgr)
+sd(gdpgr)
+
+##Dimension of the data matrix
+dim(US90)
+
+##Select a group of rows
+Clinton<-US90[2:9, ]
+
+##Compute the mains statistics for that group of rows
+summary(Clinton)
+
+##Select a subset of the variables
+VarSet1<-US90[ ,3:4]
+
+##Compute the main statistics of that subset of variables
+summary(VarSet1)
+
+##add or subtract
+lagyear<-year-1
+
+##multiply
+newgdpgr<-gdpgr*100
+
+##divide
+newunemp<-unemp/100
+
+##exponential
+gdpcap2<-gdpcapgr^2
+
+##square root
+sqrtcons<-sqrt(consgr)
+
+##natural logs
+loginv<-log(invgr)
+
+##base 10 logs
+log10inf<-log10(inf)
+
+##exponential
+expprod<-exp(producgr) 
+
+##single graph 
+plot(gdpgr, gdpcapgr, pch="*")
+
+##multiple graph
+pairs(US90 [, 2:4], pch="*")
+
+##performance of multiple variables along time
+par(mfrow=c(2,2))		##creates a matrix with 2 rows and 2 columns in which the individual graphs will be stored
+plot(year, gdpgr,    pch="*")
+plot(year, consgr,   pch="*")
+plot(year, gdpcapgr, pch="*")
+plot(year, invgr,    pch="*")
+
+##cross-correlations among covariates
+cor1<-cor(US90)
+cor1 
+
+##simple linear regressions
+model1<-lm(gdpgr~invgr)
+summary(model1)
+
+##main sources of GDP growth
+model2<-lm(gdpgr~consgr+invgr+producgr+unemp+inf)
+summary(model2) 
+
+##log-linear regressions
+model3<-lm(log(gdpgr)~log(consgr)+log(invgr)+log(producgr)+log(unemp)+log(inf))
+summary(model3)
+
+##plot the vector of residuals
+resid3<-resid(model3)
+plot(year,resid3)
+
+##fitted values and different plots
+fit3<-fitted(model3)  #   This will generate a vector of fitted values for the model 3.
+par(mfrow=c(2,2))
+plot(model3)      #     This will generate default plots of residuals vs. fitted values, Normal  Q-Q, scale-location, and Cook's distance. 
+
+##Linear Hypothesis Testing. Unrestricted model
+u<-lm(log(gdpgr)~log(invgr)+log(consgr)+log(producgr)+log(unemp)+log(inf))
+
+##Linear Hypothesis Testing. Restricted model
+r<-lm(log(gdpgr)~log(unemp)+log(inf))
+
+##run a F-test comparing the unrestricted to the restricted model
+F.test<-function(u,r)
+{
+#u is the unrestricted model
+k<-length(coef(u))
+n<-length(resid(u))
+eeu<-sum(resid(u)^2)
+#r is the restricted model
+kr<-length(coef(r))
+eer<-sum(resid(r)^2)
+#q is the number of restrictions
+q<-k-kr
+#F-statistic
+Fstat<-((eer-eeu)/q)/(eeu/(n-k))
+#P-value
+Fprob<-1-pf(Fstat, q, n-k)
+list(Fstat=Fstat, Fprob=Fprob)
+}
+  
+##F-statistic and p-value
+F.test(u,r) 
