@@ -1,0 +1,205 @@
+###kim-data-mining-course###
+
+#Intro#
+
+# Check your working directory
+getwd()
+# If necessary, set your working directory
+# setwd("/Data Mining Course")
+
+
+# If necessary, install packages
+# install.packages("psych")
+# install.packages("sm")
+
+# Load packages
+library(psych)
+library(sm)
+
+# Read data into a dataframe called impact
+
+impact <- read.table("./data/impact.txt", header = T) 
+
+#Explore data
+head(impact)
+
+# Get the dimensions of the dataframe
+dim(impact)
+nrow(impact)
+ncol(impact)
+
+
+# Object types
+class(impact) 
+names(impact) 
+
+class(impact$verbal_memory_baseline)
+class(impact$reaction_time_baseline)
+class(impact$subject)
+
+impact$subject <- factor(impact$subject) 
+class(impact$subject)
+
+# Summary statistics
+mean(impact$verbal_memory_baseline) 
+sd(impact$verbal_memory_baseline)
+
+describe(impact) 
+
+describeBy(impact, impact$condition)
+######################################
+#Graph Boxplots#
+
+#Housing data obtained from Ammerican Community Survey
+#read data to a data frame
+bostonhousing <- read.csv("./data/BostonHousing.csv", header = T) 
+#read first rows
+head(bostonhousing)
+
+#boxplot varibale AGEP
+boxplot(bostonhousing$AGE, col="blue")
+
+#For different values of variable CAT.MEDV
+boxplot(bostonhousing$AGE ~ as.factor(bostonhousing$CAT..MEDV), col="blue")
+boxplot(bostonhousing$AGE ~ as.factor(bostonhousing$CAT..MEDV), col=c("blue", "red"), xlab = "CAT..MEDV", ylab="AGE")
+
+par(mfrow = c(2,2))
+boxplot(bostonhousing$PTRATIO ~ as.factor(bostonhousing$CAT..MEDV), col=c("blue", "red"), xlab = "CAT..MEDV", ylab="PTRATIO")
+boxplot(bostonhousing$NOX ~ as.factor(bostonhousing$CAT..MEDV), col=c("blue", "red"), xlab = "CAT..MEDV", ylab="NOX")
+boxplot(bostonhousing$INDUS ~ as.factor(bostonhousing$CAT..MEDV), col=c("blue", "red"), xlab = "CAT..MEDV", ylab="INDUS")
+boxplot(bostonhousing$LSTAT ~ as.factor(bostonhousing$CAT..MEDV), col=c("blue", "red"), xlab = "CAT..MEDV", ylab="LSTAT")
+
+par(mfrow = c(1,1))
+
+######################################
+#Histograms#
+
+
+# Check your working directory
+getwd()
+# If necessary, set your working directory
+# setwd("/Data Mining Course")
+
+
+# Read data into a dataframe called impact
+impact <- read.table("./data/impact.txt", header = T) 
+
+# Subsetting
+edit(impact)
+
+control <- subset(impact, impact[, 2]=="control")
+control
+
+concussed <- subset(impact, impact[, 2]=="concussed")
+concussed
+
+# Histograms of control group at baseline
+par(mfrow = c(2,3)) # To view 6 histograms on one page 
+hist(control[, 3], xlab = "Verbal memory", main = "A") 
+hist(control[, 4], xlab = "Visual memory")
+hist(control[, 5], xlab = "Visual motor speed")
+hist(control[, 6], xlab = "Reaction time")
+hist(control[, 7], xlab = "Impulse control")
+hist(control[, 8], xlab = "Total symptom score")
+
+# To demonstrate that there is more than one way to access a variable
+par(mfrow = c(1,2)) # To view 2 histograms on one page 
+hist(control[, 3], xlab = "Verbal memory", main = "") 
+hist(control$verbal_memory_baseline, xlab = "Verbal memory", main = "") 
+
+# Histograms of concussed group at baseline
+par(mfrow = c(2,3))
+hist(concussed[, 3], xlab = "Verbal memory", main = "")
+hist(concussed[, 4], xlab = "Visual memory", main = "")
+hist(concussed[, 5], xlab = "Visual motor speed", main = "")
+hist(concussed[, 6], xlab = "Reaction time", main = "")
+hist(concussed[, 7], xlab = "Impulse control", main = "")
+hist(concussed[, 8], xlab = "Total symptom score", main = "")
+
+# Histograms of control group at retest
+par(mfrow = c(2,3))
+hist(control[, 9], xlab = "Verbal memory", main = "") 
+hist(control[, 10], xlab = "Visual memory", main = "")
+hist(control[, 11], xlab = "Visual motor speed", main = "")
+hist(control[, 12], xlab = "Reaction time", main = "")
+hist(control[, 13], xlab = "Impulse control", main = "")
+hist(control[, 14], xlab = "Total symptom score", main = "")
+
+# Histograms of concussed group at retest
+par(mfrow = c(2,3))
+hist(concussed[, 9], xlab = "Verbal memory", main = "")
+hist(concussed[, 10], xlab = "Visual memory", main = "")
+hist(concussed[, 11], xlab = "Visual motor speed", main = "")
+hist(concussed[, 12], xlab = "Reaction time", main = "")
+hist(concussed[, 13], xlab = "Impulse control", main = "")
+hist(concussed[, 14], xlab = "Total symptom score", main = "")
+
+# Density plots
+par(mfrow = c(1,2))
+hist(concussed[, 14], xlab = "Total symptom score", main = "")
+plot(density(concussed[, 14]), xlab = "Total sympton score", main = "")
+
+# Compare density plots
+par(mfrow = c(1,1))
+plot(density(impact[, 9]), col="red", xlab = "Verbal memory", main = "Multiple Density Plots", ylim=c(0,0.1))
+lines(density(concussed[,9]), col="blue")
+lines(density(control[,9]), col="green")
+
+######################################
+#Dimension Reduction#
+
+# Example PCA
+
+cereals <- read.csv("./data/Cereals.csv", header = T)
+cor(cereals)
+cor(cereals$calories,cereals$rating)
+
+# extract columns calories and consumer ratings for this example
+subset <- cereals [,c(4,16)]
+cov(subset)
+
+total_variance = var(cereals$calories)+var(cereals$rating)
+total_variance
+
+#scatterplot of the two variables: calories and consumer ratings
+plot(cereals$calories,cereals$rating)
+
+#Obtaining the Principal components 
+pc.subset <- princomp(subset)
+loadings(pc.subset)
+summary(pc.subset)
+pc.subset$scores
+
+mean(subset$calories)
+mean(subset$rating)
+
+#### Impute to remove missing values
+
+cereals2 <- read.csv("./data/Cereals2.csv", header = T)
+
+#Principal components for all data
+ pc.cereals <- princomp(cereals2[,4:16])
+loadings(pc.cereals)
+summary(pc.cereals)
+pc.cereals$scores
+
+
+#Principal components for normalized all data
+ pc.cereals2 <- princomp(cereals2[,4:16])
+loadings(pc.cereals2)
+summary(pc.cereals2)
+pc.cereals2$scores
+
+#Ejemplo ilustrativo
+load("./data/face.rda)
+faceData
+image(t(faceData)[,nrow(faceData):1])
+pc.face <- princomp(faceData)
+faceData32 <- pc.face$scores[,1:32]
+image(t(faceData32)[,nrow(faceData32):1])
+faceData1 <- pc.face$scores[,1:5]
+image(t(faceData1)[,nrow(faceData1):1])
+faceData1 <- pc.face$scores[,1:5]
+image(t(faceData1)[,nrow(faceData1):1])
+
+##The#End##
