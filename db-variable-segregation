@@ -1,0 +1,4 @@
+setwd("C:/Users/#foldername#")
+#filename#<-as.data.frame(read.csv("#filename#.csv"))
+#newfilename#<-subset(#filename#,State=="Puerto Rico")
+write.csv(#newfilename#,file="#newfilename#.csv",row.names = F)
