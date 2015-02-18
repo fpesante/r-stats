@@ -1,3 +1,4 @@
+#source http://flowingdata.com/2010/01/21/how-to-make-a-heatmap-a-quick-and-easy-solution/
 nba <- read.csv("http://datasets.flowingdata.com/ppg2008.csv", sep=",")
 nba <- nba[order(nba$PTS),]
 row.names(nba) <- nba$Name
