@@ -1,0 +1,15 @@
+##Proyecto: Indice de desarrollo humano de Puerto Rico - Capítulo de Educación
+##tema: Tasa de homicidio 2012 como indicador del estado de violencia en Puerto Rico
+##fuente: Homicide counts and rates, time series 2000-2012, en http://www.unodc.org/gsh/en/data.html
+##referencia: http://data.un.org/Explorer.aspx?d=UNODC
+##preparado: Francisco Pesante 11-mar-2015
+##########
+#summary tasa homicidios internacional
+x <- read.csv("C:/Users/francisco.pesante/Documents/2015/idh/GSH2013_Homicide_rate_2012.csv")
+summary(x[,4], header=F)
+#segregando datos de Puerto Rico
+CNTRY <- (x[,2])
+CNTRY_PR <- subset(x,CNTRY =="Puerto Rico")
+print(CNTRY_PR)
+write.csv(CNTRY_PR,file="Homicide_Rate_PR_2012.csv")
+#write.csv(CNTRY_PR,file="Homicide_Rate_PR_2012F.csv",row.names = F)
