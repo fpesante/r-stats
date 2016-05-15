@@ -1,0 +1,6 @@
+x<-read.csv("C:/Users/Paco/Desktop/IEPR/Conf_Pob/Final/Quartile_Summary_1899_2010.csv", #header=TRUE)
+summary(x[,2])
+summary(x[,3])
+summary(x[,4])
+summary(x)
+boxplot(x)
