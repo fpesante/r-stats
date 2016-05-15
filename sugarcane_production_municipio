@@ -1,0 +1,10 @@
+x<-read.csv("C:/Users/franc/Documents/2016/hgis/rela_t_c_1929_1959.csv", header=TRUE, check.names=FALSE)
+summary(x[,1])
+summary(x[,2])
+summary(x[,3])
+summary(x[,4])
+summary(x)
+boxplot(x,
+	main = "Sugarcane Production for Municipios 1929 - 1959", 
+	xlab = "Agricultural Census Year",
+	ylab = "Ton per Cuerda")
