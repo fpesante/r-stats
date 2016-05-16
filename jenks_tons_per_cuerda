@@ -1,0 +1,3 @@
+x <- read.csv("C:/Users/franc/Documents/2016/hgis/mapas/jenks_break_1929_1959.csv")
+x1 <- (x[,1])
+classIntervals(x1, 5, style = "jenks")
