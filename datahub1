@@ -1,0 +1,2 @@
+x <- read.csv("https://datahub.io/dataset/65ac1ebf-7da9-4700-b64d-a24e3c8abfd2/resource/f49dea71-59a1-439e-ad4c-7426cb6f02be/download/poblacionmunicipiospr18992010n.csv")
+mean(x[,3], na.rm=TRUE)
