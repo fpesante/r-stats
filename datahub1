@@ -3,3 +3,13 @@ mean(x[,2], na.rm=TRUE)
 summary(x[,2], na.rm=TRUE)
 summary(x[,2])
 summary(x$X1899)
+
+##############
+
+x <- as.data.frame(read.csv("https://datahub.io/dataset/65ac1ebf-7da9-4700-b64d-a24e3c8abfd2/resource/ab83a783-bcf6-4729-a312-e6e17e3d264d/download/poblacionmunicipiospr18992010col.csv"))
+PobAdj <- subset(x,Municipio=="Adjuntas")
+mean(PobAdj$Poblacion)
+##de tener problema is.numeric(PobAdj) > as.numeric(PobAdj)
+##de tener problema revisar en Console > Edit > Data Editor > Name of dataframe or matrix: PobAdj > variable: Poblacion > type: numeric
+mean(PobAdj[,3])
+summary(PobAdj[,3])
