@@ -1,0 +1,33 @@
+#Intro
+#1.	Download the latest version of R. 
+#2.	Brush up on R. You might want to take a free refresher course, such as the one offered by DataCamp.
+#3.	From the R console type update.packages(). 
+###############################################################
+#Mapping State Data
+##Excersice 1
+
+install.packages(c("choroplethr", "choroplethrMaps"))
+library(choroplethr)
+ 
+data(df_pop_state)
+head(df_pop_state)
+
+#df_pop_state
+
+state_choropleth(df_pop_state)
+
+#?state_choropleth 
+
+#Mapping State Data
+##Excersice 2
+
+data(df_state_demographics)
+colnames(df_state_demographics)
+
+df_state_demographics$value = df_state_demographics$per_capita_income
+
+state_choropleth(df_state_demographics)
+
+##Homework
+###Create a choropleth of some other demographic statistic in the data.frame df_state_demographics.
+###############################################################
