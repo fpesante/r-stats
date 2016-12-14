@@ -1,0 +1,20 @@
+1.2 Getting Help
+help
+  help(sd)
+  ?(sd)
+Arguments
+  args(sd)
+Example
+  example(sd)
+###################
+1.3 R documentation
+  help.start()
+###################  
+1.4 Websites for help with R
+  http://rseek.org
+  http://stackoverflow.com/
+  http://stats.stackexchange.com/
+  http://search.r-project.org/
+###################
+1.5 Reading Tabular Datafiles
+  dfrm <- read.table("filename.txt")
