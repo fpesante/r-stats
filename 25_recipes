@@ -18,3 +18,11 @@ Example
 ###################
 1.5 Reading Tabular Datafiles
   dfrm <- read.table("filename.txt")
+
+  setwd("~/25_recipes")
+  dfrm <- read.table("statisticians.txt")
+  dfrm <- read.table("statisticians.txt", sep=":")
+  print(dfrm)
+
+  dfrm <- read.table("statisticians.txt", stringsAsFactor=FALSE)
+  class(dfrm$V1)
