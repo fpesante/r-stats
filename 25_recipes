@@ -21,8 +21,21 @@ Example
 
   setwd("~/25_recipes")
   dfrm <- read.table("statisticians.txt")
-  dfrm <- read.table("statisticians.txt", sep=":")
-  print(dfrm)
-
+  
+#if our file used a colon (:) as the field separator
+#dfrm <- read.table("statisticians.txt", sep=":")
+#print(dfrm)
+  
+#To prevent read.table from interpreting character strings as factors
   dfrm <- read.table("statisticians.txt", stringsAsFactor=FALSE)
   class(dfrm$V1)
+  
+#To prevent read.table from interpreting character strings as factors
+  dfrm <- read.table("statisticians.txt", stringsAsFactor=FALSE)
+  class(dfrm$V1)
+ 
+#tell read.table that our file contains a header line, and it will use the column names when it builds the data frame 
+  dfrm <- read.table("statisticians.txt", header=TRUE, stringsAsFactor=FALSE)
+  print(dfrm)
+###################  
+1.6 Reading from CSV Files
