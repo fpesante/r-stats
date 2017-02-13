@@ -4,3 +4,5 @@ summary(x[,3])
 summary(x[,4])
 summary(x)
 boxplot(x)
+
+https://en.wikipedia.org/wiki/Head/tail_Breaks
