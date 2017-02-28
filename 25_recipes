@@ -1,3 +1,11 @@
+0.0 Environment
+Clear console
+  Ctrl + L
+List all variables in the environment
+  ls()
+Remove all variables 
+  rm()
+###################
 1.2 Getting Help
 help
   help(sd)
@@ -39,3 +47,8 @@ Example
   print(dfrm)
 ###################  
 1.6 Reading from CSV Files
+  tbl <- read.csv("filename")
+If it does not contain a header line
+  tbl <- read.csv("filename", header=FALSE)
+  
+###################
