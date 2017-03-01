@@ -1,0 +1,14 @@
+setwd("~/congreso_educacion/violencia")
+x <- read.csv("world_interpersonal_violence_15_29_yo_2015_plot2.csv", header=FALSE)
+boxplot(x,
+        main="Distribución de muertes violentas 2015\n
+		    (población 15 a 19 años)",
+        ylab="Tasa por cada 100,000 habitantes")
+
+summary(x)
+
+#quantile(x[,1], na.last = na.last, decreasing = decreasing)
+
+pvec <-seq(0,1,.01)#fuente:Peter Dalgaard, Introductory Statistics with R (2008, 68)
+
+quantile(x[,1], na.last = na.last, decreasing = decreasing,pvec)
