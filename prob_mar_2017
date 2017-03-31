@@ -1,0 +1,43 @@
+###############################
+         Probabilidad
+###############################
+
+pnorm(5,mean = 4.5, sd = 1.5)
+
+pnorm(5,mean = 4, sd = 1)
+
+###############################
+Probabilidad entre dos valores
+###############################
+#catapulta 1
+x <- pnorm(100,mean = 103, sd = 2)
+y <- pnorm(105,mean = 103, sd = 2)
+
+y-x
+
+#catapulta 2
+a <- pnorm(100,mean = 97, sd = 5)
+b <- pnorm(105,mean = 97, sd = 5)
+
+b-a
+
+###############################
+   Probabilidad condicional
+###############################
+
+###############################
+   Ejercicio 
+###############################
+
+x <- read.csv("~/admitidos.csv")
+
+library(dplyr)
+
+#x %>% group_by(CAMPUS) %>% 
+	summarise(promedio = mean(IGS, na.rm = TRUE), devsta = sd(IGS, na.rm = TRUE))
+
+igs_upr <- x %>% group_by(CAMPUS) %>% 
+	summarise(promedio = mean(IGS, na.rm = TRUE), devsta = sd(IGS, na.rm = TRUE))
+
+??write.csv
+write.csv(igs_upr, file = "~/ejercicio_20170331/igs_upr.csv")
