@@ -1,0 +1,10 @@
+??stringr
+
+dog <- "The quick brown dog"
+str_to_upper(dog)
+str_to_lower(dog)
+str_to_title(dog)
+
+str_to_lower("SELECTED SOCIAL CHARACTERISTICS IN PUERTO RICO, SELECTED ECONOMIC CHARACTERISTICS, SELECTED HOUSING CHARACTERISTICS, ACS DEMOGRAPHIC AND HOUSING ESTIMATES")
+
+http://127.0.0.1:19658/doc/html/Search?results=1
