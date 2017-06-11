@@ -4,32 +4,61 @@
 ### Menu > Packages > Install.package(s)... > Secure CRAN mirrors: New Zealand > OK.
 ### Packages: Hist Data > OK
 library(HistData)
+library () # Para conocer inventario de paquetes instalados
 
-library () ### Para conocer inventario de paquetes instalados
 
 ## Ayuda ##
-
 help(mean)
 example(mean)
 help.search("mean")
 help.start()
-
 ### Tambien puede consultar http://rseek.org/
 
 
 ## Verificar contenido de consola ##
-
 ls()
 objects()
-rm(list+ls()) ### Para remover contenido grabado en memoria de consoloa 
+rm(list+ls()) # Para remover contenido grabado en memoria de consoloa 
 
-## Estructura de datos: matrices ##
+## Identificar contenido de variables ##
+### Los 4 tipo de variables son: numeric|integer|logical|character
+a <- 1
+class(a)
+
+a <- as.integer(1)
+class(a)
+
+a <- as.integer(1.05)
+class(a)
+
+b <- TRUE
+class(b)
+
+c <- ("historiapesante")
+class(c)
+
+mode (c) # otra modalidad de identificar el tipo de variable
+
+length(c) #medir extension del vector
+
+
+## Conocer estructura de datos ##
+### Las 3 modalidades de datos son vectores|matrices|conjunto de datos
+
+### Vectoresv <- c(1,2,3)
+is.vector(v)
+class(v)
+v <- c(2, TRUE, "clara"); v 
+
+### Estructura de datos: matrices ###
 m <- matrix(1:10, ncol=5, nrow=2)
 m
 class(m)
 m <- matrix(1:10, ncol=2, dimnames=list(c("row1", "row2", "row3", "row4", "row5"), c("C.1", "C.2")))
 
-## Estructura de datos: data frame ##
+### Tanto para vectores como matrices, deben tener variables del mismo tipo. Ejemplo, todos numericos, o caracteres.
+
+### Estructura de datos: data frame ###
 pacientes <- data.frame(Edad=c(32, 41, 15), Sexo=c("V", "M", "V"))
 pacientes
 View(pacientes)
