@@ -38,17 +38,13 @@ Example
   dfrm <- read.table("statisticians.txt", stringsAsFactor=FALSE)
   class(dfrm$V1)
   
-#To prevent read.table from interpreting character strings as factors
-  dfrm <- read.table("statisticians.txt", stringsAsFactor=FALSE)
-  class(dfrm$V1)
- 
 #tell read.table that our file contains a header line, and it will use the column names when it builds the data frame 
-  dfrm <- read.table("statisticians.txt", header=TRUE, stringsAsFactor=FALSE)
+  dfrm <- read.table("statisticians.txt", header=TRUE, stringsAsFactor=FALSE) 
   print(dfrm)
 ###################  
 1.6 Reading from CSV Files
   tbl <- read.csv("filename")
-If it does not contain a header line
+#If it does not contain a header line
   tbl <- read.csv("filename", header=FALSE)
   
 ###################
