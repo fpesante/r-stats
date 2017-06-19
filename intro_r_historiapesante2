@@ -1,0 +1,71 @@
+#Introducción al software estadístico R (2)
+
+## Exportacion de datos en R ##
+write.table(hoja, file = "fichero.txt", sep ="\t", na = "NA", dec = ".", row.names = TRUE, col.names = TRUE)
+
+pacientes <- data.frame(Edad=c(32, 41, 15), Sexo=c("V", "M", "V"))
+write.table(pacientes, file = "Pacientes.txt", sep ="\t", na = "NA", dec = ".", row.names = TRUE, col.names = TRUE)
+
+#write.csv()
+#write.csv2()
+
+hoja <- c(1:10)
+write.table(hoja, file = "fichero.txt", sep ="\t", na = "NA", dec = ".", row.names = TRUE, col.names = TRUE)
+getwd()   #comando que te permite identificar donde se guardo el documento
+
+###de querer cambiar el lugar donde se guarda el documento, se debe escribir:
+###setwd(c:/~)
+
+pacientes <- data.frame(Edad=c(32, 41, 15), Sexo=c("V", "M", "V"))
+write.table(pacientes, file = "Pacientes.txt", sep ="\t", na = "NA", dec = ".", row.names = TRUE, col.names = TRUE)
+
+
+## Lectura/Importacion de datos en R ##
+
+?read.table
+library(foreign)
+?read.spss	  #documentos guardados en formato ".sav"
+
+## Analisis descriptivo ##
+
+library(MASS)
+data(birthwt)
+View(birthwt)
+dim(birthwt) 
+
+birthwt$age
+attach(birthwt)
+age
+
+class(race)
+race=as.factor(race)
+class(race)
+
+summary(data)
+min(data)
+max(data)
+range(data)
+mean(data)
+median(data)
+sd(data)
+IQR(data)
+table(data)
+table(race)
+table(race,smoke)
+
+###En caso de no poder correrlo, ir al menu de Packages > Load package... > MASS
+
+
+## Comandos para analisis grafico de datos ##
+
+tabla=table(race) 
+barplot(tabla)	##diagrama de barras
+
+hist(data)	#histograma para variables continuas
+boxplot(data)	#diagrama de cajas
+
+plot(data1,data2) #nube de puntos
+
+### para consulta de otros conjuntos de datos ver: library(help = "datasets")
+
+### Fuente: Bioestatech, Advice, Training and Innovation in Biostatistics: https://www.youtube.com/watch?v=UtvL9PsHzGg
