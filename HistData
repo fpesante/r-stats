@@ -4,11 +4,15 @@ R\win-library\3.3.3
 update.packages(checkBuilt=TRUE, ask=FALSE)
 
 library(HistData)
+#install.packages("HistData")
+#help(package = HistData)
 
 ###########################################################################
 Arbuthnot’s data on male and female birth ratios in London from 1629-1710.
 ###########################################################################
 data(Arbuthnot)
+View(Arbuthnot)
+
 # plot the sex ratios
 with(Arbuthnot, plot(Year,Ratio, type='b', ylim=c(1, 1.20), ylab="Sex Ratio (M/F)"))
 abline(h=1, col="red")
