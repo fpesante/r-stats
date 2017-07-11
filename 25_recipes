@@ -5,8 +5,11 @@ List all variables in the environment
   ls()
 Remove all variables 
   rm()
-###################
-1.2 Getting Help
+  rm(list=ls())
+  
+######################################
+# 1.2 Getting Help
+######################################
 help
   help(sd)
   ?(sd)
@@ -14,17 +17,21 @@ Arguments
   args(sd)
 Example
   example(sd)
-###################
-1.3 R documentation
-  help.start()
-###################  
-1.4 Websites for help with R
+######################################
+# 1.3 R documentation
+######################################
+help.start()
+######################################
+# 1.4 Websites for help with R
+######################################
+
   http://rseek.org
   http://stackoverflow.com/
   http://stats.stackexchange.com/
   http://search.r-project.org/
-###################
-1.5 Reading Tabular Datafiles
+######################################
+# 1.5 Reading Tabular Datafiles
+######################################
   dfrm <- read.table("filename.txt")
 
   setwd("~/25_recipes")
@@ -41,10 +48,51 @@ Example
 #tell read.table that our file contains a header line, and it will use the column names when it builds the data frame 
   dfrm <- read.table("statisticians.txt", header=TRUE, stringsAsFactor=FALSE) 
   print(dfrm)
-###################  
-1.6 Reading from CSV Files
-  tbl <- read.csv("filename")
+######################################
+# 1.6 Reading from CSV Files
+######################################
+  tbl <- read.csv("filename.csv")
 #If it does not contain a header line
-  tbl <- read.csv("filename", header=FALSE)
-  
-###################
+  tbl <- read.csv("filename.csv", header=FALSE)
+#Structure
+  str(tbl)
+#Data interpreted as strings, not as factors  
+  tbl <- read.csv("filename.csv", as.is=TRUE)
+#Disable comments in your datafile "#"
+  comment.char=""
+#See the R help page for read.table, which is the basis for read.csv. See the write.csv function for writing CSV files
+######################################
+# 1.7 Creating a Vector
+######################################
+c(1,1,2,3,5,8,13,21)
+c(1*pi, 2*pi, 3*pi, 4*pi)
+c("Everyone", "loves", "stats.")
+c(TRUE,TRUE,FALSE,TRUE)
+
+v1 <- c(1,2,3)
+v2 <- c(4,5,6)
+c(v1,v2)
+######################################
+# 1.8 Computing Basic Statistics
+######################################
+mean(x)
+median(x)
+sd(x)
+var(x)
+cor(x, y)
+cov(x, y)
+
+######################################
+# 
+######################################
+
+
+
+######################################
+# 
+######################################
+
+
+######################################
+#
+######################################
