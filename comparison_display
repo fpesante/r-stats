@@ -1,0 +1,59 @@
+#Adult Combination N_single N_multiple
+#0 0 25 0
+#0 1 4 21
+#1 0 23 5
+#1 1 18 10
+
+
+setwd("~/AndrewFiles/research/graphics")
+gopnik <- read.table("gopnik.txt", header=TRUE)
+N <- gopnik$N_single + gopnik$N_multiple
+p_multiple <- gopnik$N_multiple / N
+p_correct <- ifelse(gopnik$Combination==0, 1 - p_multiple, p_multiple)
+colors <- c("red", "blue")
+combination_labels <- c("Individual\ncondition", "Combination\ncondition")
+adult_labels <- c("Children", "Adults")
+
+pdf("gopnik_2.pdf", height=4, width=5)
+par(mar=c(3,3,3,2), mgp=c(1.7, .5, 0), tck=-.01, bg="gray90")
+plot(c(0,1), c(0,1), yaxs="i", xlab="", ylab="Percent who gave correct answer", xaxt="n", yaxt="n", type="n", main="Children did better than adults,\nespecially in the combination condition", cex.main=.9)
+axis(1, c(0, 1), combination_labels, mgp=c(1.5,1.5,0))
+axis(2, c(0,.5,1), c("0", "50%", "100%"))
+for (i in 1:2){
+  ok <- gopnik$Adult==(i-1)
+  x <- gopnik$Combination[ok]
+  y <- p_correct[ok]
+  se <- sqrt((N*p_correct + 2)*(N[ok]*(1-p_correct) + 2)/(N[ok] + 4)^3)
+  lines(x, y, col=colors[i])
+  points(x, y, col=colors[i], pch=20)
+  for (j in 1:2){
+    lines(rep(x[j], 2), y[j] + se[j]*c(-1,1), lwd=2, col=colors[i])
+    lines(rep(x[j], 2), y[j] + se[j]*c(-2,2), lwd=.5, col=colors[i])
+  }
+  text(mean(x), mean(y) - .05, adult_labels[i], col=colors[i], cex=.9)
+}
+dev.off()
+
+pdf("gopnik_1.pdf", height=4, width=5)
+par(mar=c(3,3,3,2), mgp=c(1.7, .5, 0), tck=-.01, bg="gray90")
+plot(c(0,1), c(0,1), yaxs="i", xlab="", ylab="Percent who gave correct answer", xaxt="n", yaxt="n", type="n", main="Children did better than adults,\nespecially in the combination condition", cex.main=.9)
+axis(1, c(0, 1), adult_labels)
+axis(2, c(0,.5,1), c("0", "50%", "100%"))
+for (i in 1:2){
+  ok <- gopnik$Combination==(i-1)
+  x <- gopnik$Adult[ok]
+  y <- p_correct[ok]
+  se <- sqrt((N*p_correct + 2)*(N[ok]*(1-p_correct) + 2)/(N[ok] + 4)^3)
+  lines(x, y, col=colors[i])
+  points(x, y, col=colors[i], pch=20)
+  for (j in 1:2){
+    lines(rep(x[j], 2), y[j] + se[j]*c(-1,1), lwd=2, col=colors[i])
+    lines(rep(x[j], 2), y[j] + se[j]*c(-2,2), lwd=.5, col=colors[i])
+  }
+  text(mean(x), mean(y) - .1, combination_labels[i], col=colors[i], cex=.9)
+}
+dev.off()
+
+
+
+#source: http://andrewgelman.com/2017/07/16/graphs-comparisons-case-study/
