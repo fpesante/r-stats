@@ -8,9 +8,23 @@ str_to_title(x)
 
 #> [1] "I Like Horses."
 
+str_to_title("ACS DEMOGRAPHIC AND HOUSING ESTIMATES")
+
 str_to_lower(x)
 #> [1] "i like horses."
 
+#############
+#Basic Stringr Operators
+str_c(string, sep = "")
 
+# Joins together multiple strings including integers
+# Is the stringr equivalent to paste(sep = "") or paste0()
+
+str_length(string)
+
+# Returns the string length
+# Similar to base function nchar()
+# str_length() converts factors to strings and also preserves NA's
 
 #source: Intro to stringr -https://cran.r-project.org/web/packages/stringr/vignettes/stringr.html
+#        Basic Stringr Operators - https://rpubs.com/briane/stringr
