@@ -1,0 +1,16 @@
+x <- "I like horses."
+
+str_to_upper(x)
+
+#> [1] "I LIKE HORSES."
+
+str_to_title(x)
+
+#> [1] "I Like Horses."
+
+str_to_lower(x)
+#> [1] "i like horses."
+
+
+
+#source: Intro to stringr -https://cran.r-project.org/web/packages/stringr/vignettes/stringr.html
