@@ -1,3 +1,5 @@
+library(stringr)
+
 x <- "I like horses."
 
 str_to_upper(x)
