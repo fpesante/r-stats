@@ -1,0 +1,38 @@
+######################################################################
+# Extraccion de datos de QCEW para Industrias Creativas
+######################################################################
+qcewGetAreaData <- function(year, qtr, area) {
+	url <- "http://data.bls.gov/cew/data/api/YEAR/QTR/area/AREA.csv"
+	url <- sub("YEAR", year, url, ignore.case=FALSE)
+	url <- sub("QTR", tolower(qtr), url, ignore.case=FALSE)
+	url <- sub("AREA", toupper(area), url, ignore.case=FALSE)
+	read.csv(url, header = TRUE, sep = ",", quote="/"", dec=".", na.strings=" ", skip=0)
+}
+
+PRData <- qcewGetAreaData("2016", "a", "72000")
+
+setwd("C:/~/QCEW")
+write.csv(PRData, file="QCEW_PRData_2016.csv", row.names = F)
+######################################################################
+# Segregacion de sectores Ley 173
+######################################################################
+library(dplyr)
+PRData <- read.csv("QCEW_PRData_2016.csv")
+
+#View(PRData)
+
+PRData_Ley173 <- filter(PRData, industry_code == "5414"|industry_code == "541410"|industry_code == "541420"|industry_code == "541430"|industry_code == "541490"|industry_code == "511210"|industry_code == "519130"|industry_code == "541511"|industry_code == "541512"|industry_code == "541310"|industry_code == "541320"|industry_code == "611610"|industry_code == "5122"|industry_code == "512210"|industry_code == "512220"|industry_code == "512230"|industry_code == "512240"|industry_code == "512290"|industry_code == "54192"|industry_code == "541921"|industry_code == "541922"|industry_code == "7111"|industry_code == "711110"|industry_code == "711120"|industry_code == "711130"|industry_code == "711190"|industry_code == "7113"|industry_code == "711310"|industry_code == "711320"|industry_code == "711510")
+
+#View(PRData_Ley173)
+
+write.csv(PRData_Ley173,file="QCEW_PRData_Ley173.csv",row.names = F)
+######################################################################
+# Segregacion de sectores Ley 173+
+######################################################################
+PRData <- read.csv("QCEW_PRData_2016.csv")
+
+PRData_Ley173Plus <- filter(PRData, industry_code == "515111"|industry_code == "515112"|industry_code == "515120"|industry_code == "515210"|industry_code == "517110"|industry_code == "519110"|industry_code == "451211"|industry_code == "451212"|industry_code == "323117"|industry_code == "424920"|industry_code == "511110"|industry_code == "511120"|industry_code == "511130"|industry_code == "511191"|industry_code == "511199"|industry_code == "541810"|industry_code == "541820"|industry_code == "541830"|industry_code == "541840"|industry_code == "541850"|industry_code == "541860"|industry_code == "541870"|industry_code == "541890"|industry_code == "332323"|industry_code == "337212"|industry_code == "541340"|industry_code == "611511"|industry_code == "611630"|industry_code == "611420"|industry_code == "512110"|industry_code == "512120"|industry_code == "512131"|industry_code == "512132"|industry_code == "512191"|industry_code == "512199"|industry_code == "339992"|industry_code == "451140"|industry_code == "323111"|industry_code == "323113"|industry_code == "339910"|industry_code == "339930"|industry_code == "423210"|industry_code == "423410"|industry_code == "423920"|industry_code == "448310"|industry_code == "451120"|industry_code == "451130"|industry_code == "453220"|industry_code == "453920"|industry_code == "519120"|industry_code == "712110"|industry_code == "712120")
+
+#View(PRData_Ley173Plus)
+
+write.csv(PRData_Ley173Plus,file="QCEW_PRData_Ley173Plus.csv",row.names = F)
