@@ -1,0 +1,26 @@
+library(dplyr)
+setwd("C:/~/comercio_externo")
+############################################################
+#		Query de variables Ley 173 
+############################################################
+#IMPORTACION
+iNAICS32_33_51 <-read.csv("i_NAICS6_2014_17.csv")
+
+#View(iNAICS32_33_51)
+
+iNAICS32_33_51_Ley173 <- filter(iNAICS32_33_51, NAICS == "5414"|NAICS == "541410"|NAICS == "541420"|NAICS == "541430"|NAICS == "541490"|NAICS == "511210"|NAICS == "519130"|NAICS == "541511"|NAICS == "541512"|NAICS == "541310"|NAICS == "541320"|NAICS == "611610"|NAICS == "5122"|NAICS == "512210"|NAICS == "512220"|NAICS == "512230"|NAICS == "512240"|NAICS == "512290"|NAICS == "54192"|NAICS == "541921"|NAICS == "541922"|NAICS == "7111"|NAICS == "711110"|NAICS == "711120"|NAICS == "711130"|NAICS == "711190"|NAICS == "7113"|NAICS == "711310"|NAICS == "711320"|NAICS == "711510")
+
+write.csv(iNAICS32_33_51_Ley173, file="i_ComercioExterno_Ley173.csv", row.names = F)
+############################################################
+#EXPORTACION
+eNAICS32_33_51  <-read.csv("e_NAICS6_2014_17.csv")
+
+#View(eNAICS32_33_51)
+
+eNAICS32_33_51_Ley173 <- filter(eNAICS32_33_51, NAICS == "5414"|NAICS == "541410"|NAICS == "541420"|NAICS == "541430"|NAICS == "541490"|NAICS == "511210"|NAICS == "519130"|NAICS == "541511"|NAICS == "541512"|NAICS == "541310"|NAICS == "541320"|NAICS == "611610"|NAICS == "5122"|NAICS == "512210"|NAICS == "512220"|NAICS == "512230"|NAICS == "512240"|NAICS == "512290"|NAICS == "54192"|NAICS == "541921"|NAICS == "541922"|NAICS == "7111"|NAICS == "711110"|NAICS == "711120"|NAICS == "711130"|NAICS == "711190"|NAICS == "7113"|NAICS == "711310"|NAICS == "711320"|NAICS == "711510")
+
+write.csv(eNAICS32_33_51_Ley173, file="e_ComercioExterno_Ley173.csv", row.names = F)
+############################################################
+#		Fuentes
+############################################################
+# http://www.estadisticas.pr/iepr/Estadisticas/Proyectosespeciales/ComercioExterno/Detalle.aspx
