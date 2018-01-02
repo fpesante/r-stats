@@ -1,0 +1,27 @@
+######################################################################
+# Extraccion de datos de OES Industrias Creativas 2016
+######################################################################
+
+###########     Ley 173     ###########
+setwd("C:/~/oes/oesm16st")
+library(dplyr)
+
+oes2016 <- read.csv("state_M2016_dl.csv")
+
+#View(oes2016)
+
+PR <- filter(oes2016, STATE == "Puerto Rico")
+
+PR_oes2016_Ley173 <- filter(PR, OCC_CODE == "15-1131"|OCC_CODE == "15-1132"|OCC_CODE == "15-1133"|OCC_CODE == "15-1134"|OCC_CODE == "17-1011"|OCC_CODE == "27-1011"|OCC_CODE == "27-1012"|OCC_CODE == "27-1013"|OCC_CODE == "27-1014"|OCC_CODE == "27-1021"|OCC_CODE == "27-1022"|OCC_CODE == "27-1024"|OCC_CODE == "27-1025"|OCC_CODE == "27-1027"|OCC_CODE == "27-3041"|OCC_CODE == "27-3042"|OCC_CODE == "27-3043"|OCC_CODE == "27-4021")
+
+#View(PR_oes2016_Ley173)
+
+write.csv(PR_oes2016_Ley173,file="PR_oes2016_Ley173.csv",row.names = F)
+
+###########     Ley 173 Plus    ###########
+
+PR_oes2016_Ley173Plus <- filter(PR, OCC_CODE == "39-3021"|OCC_CODE == "39-3031"|OCC_CODE == "43-4121"|OCC_CODE == "51-5111"|OCC_CODE == "51-5112"|OCC_CODE == "51-5113"|OCC_CODE == "51-7021")
+
+#View(PR_oes2016_Ley173Plus)
+
+write.csv(PR_oes2016_Ley173Plus,file="PR_oes2016_Ley173Plus.csv",row.names = F)
