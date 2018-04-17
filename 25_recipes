@@ -6,7 +6,11 @@ List all variables in the environment
 Remove all variables 
   rm()
   rm(list=ls())
-  
+Random Sample
+  v1 <- c(1,2,3,4,5)
+  v2 <- c(6,7,8,9,10)
+  x <- c(v1,v2)
+  sort(sample(x, 3))
 ######################################
 # 1.2 Getting Help
 ######################################
