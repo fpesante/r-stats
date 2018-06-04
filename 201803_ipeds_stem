@@ -1,6 +1,6 @@
 ####################################################################
 library(dplyr)
-setwd("C:/Users/francisco.pesante/Documents/2018/02_proyectos/07_stem")
+setwd("C:~/2018/02_proyectos/07_stem")
 ####################################################################
 query9 <- read.csv("query9_awlevel_ctotaltw_2014_15.csv")
 #View(query9)
