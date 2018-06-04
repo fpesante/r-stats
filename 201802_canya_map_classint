@@ -1,0 +1,13 @@
+library(classInt)
+install.packages("classIntervals")
+########################################
+x <- read.csv("C:~/mapas/qgis/t_tpc_vector_natural_breaks.csv")
+t <- (x[,1])
+classIntervals(t, 3, style = "jenks")
+# cannot coerce "classIntervals as data.frame #
+# ct <- classIntervals(t, 3, style = "jenks")
+# write.csv(ct,file = "Jenks_mun_ton.csv", row.names = F)
+########################################
+# x <- read.csv("C:~/mapas/qgis/t_tpc_vector_natural_breaks.csv")
+# tpc <- (x[,2])
+# classIntervals(tpc, 3, style = "jenks")
