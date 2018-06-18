@@ -36,3 +36,30 @@ PRData_Ley173Plus <- filter(PRData, industry_code == "515111"|industry_code == "
 #View(PRData_Ley173Plus)
 
 write.csv(PRData_Ley173Plus,file="QCEW_PRData_Ley173Plus.csv",row.names = F)
+
+######################################################################
+# Otras notas 
+######################################################################
+qcewGetAreaData <- function(year, qtr, area) {
+               url <- "http://www.bls.gov/cew/data/api/YEAR/QTR/area/AREA.csv"
+               url <- sub("YEAR", year, url, ignore.case=FALSE)
+               url <- sub("QTR", qtr, url, ignore.case=FALSE)
+               url <- sub("AREA", area, url, ignore.case=FALSE)
+               read.csv(url, header = TRUE, sep = ",", quote="\"", dec=".", na.strings=" ", skip=0)
+}
+ 
+qcew_total<-matrix(rep("NA",5*16), ncol=5)
+q = 1
+ 
+for (i in c(2013:2016))
+{
+for (j in c(1:4))
+{
+ 
+PR_Data <- qcewGetAreaData(i, j, "72000")
+ 
+ 
+qcew_total[q,]<-as.numeric(PR_Data[PR_Data$agglvl_code==50,c(9:13)])
+q=q+1
+}
+}
