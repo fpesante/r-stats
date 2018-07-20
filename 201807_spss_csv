@@ -1,0 +1,11 @@
+library(foreign)
+dataset = read.spss("P:/~/Survey.sav", use.value.labels = FALSE)
+connect<-as.data.frame(dataset)
+write.csv(connect,file="Survey.csv", row.names=FALSE)
+ 
+# copy all variable labels in separated list
+vars<-attr(dataset,"variable.labels")
+write.csv(vars,file="variable-labelsB18.csv")
+ 
+# copy all value labels as separated list
+labels<-attr(dataset,"label.table")  ##Hay que llamar cada variable para obtener los value labels
