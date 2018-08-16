@@ -1,0 +1,10 @@
+library(dplyr)
+setwd("C:/~")
+importacion_autos <-read.csv("https://datos.estadisticas.pr/~.csv")
+
+importacion <- filter(importacion_autos, Trade == "i")
+importacion_autos1 <- filter(importacion, naics == "336111")
+importacion_autos2 <- filter(importacion, naics == "336112")
+importacion_autos12 <- bind_rows(importacion_autos1,importacion_autos2)
+
+write.csv(importacion_autos12, file="imp_autos.csv", row.names = F)
