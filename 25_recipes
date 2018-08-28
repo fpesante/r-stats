@@ -6,6 +6,8 @@ List all variables in the environment
 Remove all variables 
   rm()
   rm(list=ls())
+R\win-library\3.3.3
+  update.packages(checkBuilt=TRUE, ask=FALSE)
 Random Sample
   v1 <- c(1,2,3,4,5)
   v2 <- c(6,7,8,9,10)
