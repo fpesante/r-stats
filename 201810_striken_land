@@ -1,0 +1,174 @@
+#######################################################################
+# Matthew L. Jockers, Text Analysis with R for Students of Literature #
+#######################################################################
+## 		C.2 First Foray into Text Analysis with R [p.11] 	   ##
+#######################################################################
+
+
+###	2.1 Loading the First Text File	###
+
+setwd("C:~/striken_land")
+text.v <- scan("sl-book-txt.txt", what="character", sep="\n")
+text.v[2]
+
+###	2.2 Separate Content from Metadata	###
+
+start.v <- which(text.v == "INTRODUCTION")
+end.v <- which(text.v == "look to their own benefit.")
+
+length(text.v)
+
+start.metadata.v <- text.v[1:start.v -1]
+end.metadata.v <- text.v[(end.v+1):length(text.v)]
+metadata.v <- c(start.metadata.v, end.metadata.v)
+#diary <- novel
+diary.lines.v <- text.v[start.v:end.v]
+
+metadata.v <- c(text.v[1:(start.v-1)], text.v[(end.v+1):length(text.v)])
+
+text.v[start.v]
+text.v[start.v-1]
+text.v[end.v]
+text.v[end.v+1]
+
+length(text.v)
+length(diary.lines.v)
+
+diary.v <- paste(diary.lines.v, collapse=" ")
+
+length(diary.v)
+
+diary.v[1]
+
+###	2.3 Reprocessing the Content	###
+
+#striken <- moby
+diary.lower.v <- tolower(diary.v)
+striken.words.l <- strsplit(diary.lower.v, "\\W")
+
+class(diary.lower.v)
+class(striken.words.l)
+
+str(striken.words.l)
+
+striken.word.v <- unlist(striken.words.l)
+
+not.blanks.v <- which(striken.word.v!="")
+
+striken.word.v <- striken.word.v[not.blanks.v]
+
+striken.word.v[1:10]
+
+which(striken.word.v=="agriculture")
+#which(striken.word.v=="agricultural")
+#which(striken.word.v=="rice")
+#which(striken.word.v=="WPA")
+#which(striken.word.v=="price index")
+#which(striken.word.v=="500 acres")
+#which(striken.word.v=="land")
+
+striken.word.v[which(striken.word.v=="agriculture")]
+
+
+###	2.4 Beginning the Analysis	###
+
+#veces que ocurre
+length(striken.word.v[which(striken.word.v=="agriculture")])
+length(striken.word.v)
+
+# Put a count of the occurrences of agriculture into agriculture.hits.v
+agriculture.hits.v <- length(striken.word.v[which(striken.word.v=="agriculture")])
+
+# Put a count of total words into total.words.v
+total.words.v <- length(striken.word.v)
+
+# now divide
+agriculture.hits.v/total.words.v
+
+length(unique(striken.word.v))
+
+striken.freqs.t <- table(striken.word.v)
+sort(striken.freqs.t)
+rev(striken.freqs.t)
+
+sorted.striken.freqs.t <- sort(striken.freqs.t , decreasing=TRUE)
+
+#######################################################################
+##	C.3 Accessing and Comparing Word Frequency Data [p. 25]	   ##
+#######################################################################
+
+###	3.1 Accessing Word Data	###
+sorted.striken.freqs.t["agriculture"]
+sorted.striken.freqs.t["agricultural"]
+sorted.striken.freqs.t["land"]
+sorted.striken.freqs.t["unemployment"]
+sorted.striken.freqs.t["hunger"]
+sorted.striken.freqs.t["starvation"]
+
+striken.word.v[4:6]
+sorted.striken.freqs.t[1]
+sorted.striken.freqs.t["the"]
+
+sorted.striken.freqs.t["him"]/sorted.striken.freqs.t["her"]
+sorted.striken.freqs.t["he"]/sorted.striken.freqs.t["she"]
+
+length(striken.word.v)
+
+###	3.2 Recycling	###
+
+sorted.striken.rel.freqs.t <- 100*(sorted.striken.freqs.t/sum(sorted.striken.freqs.t))
+
+num.vector.v <- c(1,2,3,4,5)
+num.vector.v * 10
+sorted.striken.rel.freqs.t["the"]
+
+plot(sorted.striken.rel.freqs.t[1:10], type="b",
+xlab="Top Ten Words", ylab="Percentage of Full Text", xaxt ="n")
+axis(1,1:10, labels=names(sorted.striken.rel.freqs.t [1:10]))
+
+#######################################################################
+##		C. 4 Token Distribution Analysis [p. 29]			   ##
+#######################################################################
+
+###	4.1 Dispersion Plots	###
+
+n.time.v <- seq(1:length(striken.word.v))
+
+agriculture.v <- which(striken.word.v == "agriculture")
+
+w.count.v <- rep(NA,length(n.time.v))
+
+w.count.v[agriculture.v] <- 1
+
+plot(w.count.v, main="Dispersion Plot of 'agriculture' in The Striken Land",
+xlab="Novel Time", ylab="agriculture", type="h", ylim=c(0,1), yaxt='n')
+
+# sorted.striken.freqs.t["bolivar"]
+# n.time.v <- seq(1:length(striken.word.v))
+# bolivar.v <- which(striken.word.v == "bolivar")
+# w.count.v <- rep(NA,length(n.time.v))
+# w.count.v[bolivar.v] <- 1
+# plot(w.count.v, main="Dispersion Plot of 'Bolivar' in The Striken Land",
+# xlab="Novel Time", ylab="bolivar", type="h", ylim=c(0,1), yaxt='n')
+
+agriculture.v <- which(striken.word.v == "agriculture") # find "agriculture"
+a.count.v <- rep(NA,length(n.time.v))
+# change 'w' to 'a' to keep bolivar and agriculture in separate variables
+a.count.v[agriculture.v] <- 1 # mark the occurrences with a 1
+plot(a.count.v, main="Dispersion Plot of 'agriculture' in The Striken Land",
+xlab="Novel Time", ylab="agric", type="h", ylim=c(0,1), yaxt='n')
+
+
+###	4.2 Searching with grep		###
+####	4.2.1 Cleaning the Workspace	####
+
+#rm(list = ls())
+
+text.v <- scan("C:/Users/francisco.pesante/Documents/2018/04_personal/agric/striken_land/sl-book-txt.txt", what="character", sep="\n")
+start.v <- which(text.v == "CHAPTER 1")
+end.v <- which(text.v == "-END-")
+#novel -> diary
+diary.lines.v <- text.v[start.v:end.v]
+
+####	4.2.2 Identify the chapter break positions in the vector using the grep function	####
+?grep
