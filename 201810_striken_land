@@ -170,5 +170,235 @@ end.v <- which(text.v == "-END-")
 #novel -> diary
 diary.lines.v <- text.v[start.v:end.v]
 
+#start.v <- which(text.v == "CHAPTER 1")
+#end.v <- which(text.v == "CHAPTER 2")
+#diary.lines.v <- text.v[start.v:end.v]
+
+#diary.lines.v
+
 ####	4.2.2 Identify the chapter break positions in the vector using the grep function	####
-?grep
+#?grep
+
+#*identificar las delimitaciones existentes, a partir de los parametros establecidos. En este caso "CHAPTER"##
+#*estas fueron preparadas a manos al convertir el contenido del pdf a txt.##
+
+chap.positions.v <- grep("^CHAPTER \\d", diary.lines.v)
+diary.lines.v[chap.positions.v]
+
+#*posicion de las delimitaciones
+
+chap.positions.v
+
+#*marcando el final
+diary.lines.v <- c(diary.lines.v, "END")
+last.position.v <- length(diary.lines.v)
+chap.positions.v <- c(chap.positions.v , last.position.v)
+chap.positions.v
+
+###4.3 The for Loop and if Conditional###
+#**A for loop allows us to do a task over and over again for a set number of iterations. In this case, the number of iterations will be equal to the number of chapters found in the text.
+
+#**se esta identificando el index number para conocer la posicion de cada capitulo, individual
+
+chap.positions.v[1]
+chap.positions.v[2]
+
+#**automatizar lo anterior para todos los capitulos: for loop
+
+for(i in 1:length(chap.positions.v)){
+	print(chap.positions.v[i])
+}
+
+#**anyadir nombre de capitulo a posicion
+
+for(i in 1:length(chap.positions.v)){
+print(paste("Chapter ",i, " begins at position ",
+chap.positions.v[i]), sep="")
+}
+
+#*no entiendo el uso de lo siguiente
+chapter.raws.l <- list()
+chapter.freqs.l <- list()
+
+#*what to do when i is equal to the length of chap.positions.v. : if loop
+
+for(i in 1:length(chap.positions.v)){
+if(i != length(chap.positions.v)){
+chapter.title <- diary.lines.v[chap.positions.v[i]]
+start <- chap.positions.v[i]+1
+end <- chap.positions.v[i+1]-1
+chapter.lines.v <- diary.lines.v[start:end]
+chapter.words.v <- tolower(paste(chapter.lines.v, collapse=" "))
+chapter.words.l <- strsplit(chapter.words.v, "\\W")
+chapter.word.v <- unlist(chapter.words.l)
+chapter.word.v <- chapter.word.v[which(chapter.word.v!="")]
+chapter.freqs.t <- table(chapter.word.v)
+chapter.raws.l[[chapter.title]] <- chapter.freqs.t
+chapter.freqs.t.rel <- 100*(chapter.freqs.t/sum(chapter.freqs.t))
+chapter.freqs.l[[chapter.title]] <- chapter.freqs.t.rel
+}
+}
+
+
+###4.4 Accessing and Processing List Items###
+
+#**If you want to know the relative frequency of the word type whale in the first chapter, you could get the value using bracketed subsetting, like this
+chapter.freqs.l[[1]]["agriculture"]
+chapter.freqs.l[[2]]["agriculture"]
+chapter.freqs.l[[3]]["agriculture"]
+chapter.freqs.l[[4]]["agriculture"]
+chapter.freqs.l[[5]]["agriculture"]
+chapter.freqs.l[[6]]["agriculture"]
+chapter.freqs.l[[7]]["agriculture"]
+chapter.freqs.l[[8]]["agriculture"]
+chapter.freqs.l[[9]]["agriculture"]
+chapter.freqs.l[[10]]["agriculture"]
+
+#*para atender el tema de agricultura, parece ser que el capitulo 2 es el de mayor frecuencia en referencias
+
+lapply(chapter.freqs.l, '[', 'agriculture')
+
+agriculture.l <- lapply(chapter.freqs.l, '[', 'agriculture')
+#agricultural		agricultural.l <- lapply(chapter.freqs.l, '[', 'agricultural')
+#land		land.l <- lapply(chapter.freqs.l, '[', 'land')
+
+rbind(agriculture.l[[1]], agriculture.l[[2]], agriculture.l[[3]])
+rbind(agriculture.l,'[')
+
+####4.4.4 do.call (Do Dot Call)####
+agriculture.m <- do.call(rbind, agriculture.l)
+#agricultural		agricultural.m <- do.call(rbind, agricultural.l)
+#land		lapply(chapter.freqs.l, '[', 'land')
+#			rbind(land.l,'[')
+#			land.m <- do.call(rbind, land.l)
+
+####4.4.5 cbind####
+class(agriculture.m[,1])
+
+agriculture.v <- agriculture.m[,1]
+land.v <- land.m[,1]
+#class(land.m[,1])
+agric.land.m <- cbind(agriculture.v, land.v)
+dim(agric.land.m )
+
+colnames(agric.land.m) <- c("agriculture", "land")
+barplot(agric.land.m, beside=T, col="grey")
+
+#######################################################################
+## 		Chapter 5. Correlation					[p. 47] ##
+#######################################################################
+### 5.2 Correlation Analysis	###
+
+agriculture.l <- lapply(chapter.freqs.l, "[", "agriculture")
+
+agric.land.m[1:16, ]
+
+#** to remove na
+agric.land.m[which(is.na(agric.land.m))] <- 0
+
+#** run the correlation
+cor(agric.land.m)
+
+mycor <- cor(agric.land.m[,"agriculture"], agric.land.m[,"land"])
+mycor
+
+#*Pearson Product-moment correlation coefficient|moderada positiva|https://www.dummies.com/education/math/statistics/how-to-interpret-a-correlation-coefficient-r/
+
+
+### 5.4  Testing Correlation with Randomization	###
+
+#** convert to a data frame
+cor.data.df <- as.data.frame(agric.land.m)
+cor(cor.data.df)
+
+#** shuffle for random ordering and eliminating a correlation as a mere chance
+sample(cor.data.df$agric)
+
+cor(sample(cor.data.df$agriculture), cor.data.df$land)
+
+#* por los resultados cambiantes conviene generar una muestra grande
+mycors.v <- NULL
+	for(i in 1:10000){
+	mycors.v <- c(mycors.v, cor(sample(cor.data.df$agriculture), cor.data.df$land))
+}
+
+#* ver las medidas de dispersion y de tendencia central
+min(mycors.v)
+max(mycors.v)
+range(mycors.v)
+mean(mycors.v)
+sd(mycors.v)
+
+#** generar histograma
+h <- hist(mycors.v, breaks=100, col="grey",
+	xlab="Correlation Coefficient",
+	main="Histogram of Random Correlation Coefficients\n
+	with Normal Curve",
+	plot=T)
+xfit <- seq(min(mycors.v),max(mycors.v),length=1000)
+yfit <- dnorm(xfit,mean=mean(mycors.v),sd=sd(mycors.v))
+yfit <- yfit*diff(h$mids[1:2])*length(mycors.v)
+lines(xfit, yfit, col="black", lwd=2)
+
+#######################################################################
+#	Part II. Mesoanalysis							   #
+#######################################################################
+#######################################################################
+## 	Chapter 6 - Measures of Lexical Variety				  ##
+#######################################################################
+
+#** type-token ratio (TTR)
+
+# 6.2 Mean Word Frequency #
+
+#* To calculate mean word frequency on a chapter-by-chapter basis
+length(chapter.raws.l)
+
+names(chapter.raws.l)
+
+class(chapter.raws.l$"CHAPTER 1")	#**class(chapter.raws.l[[1]])
+
+chapter.raws.l$"CHAPTER 1"	#**chapter.raws.l[[1]]
+#x <-sort(chapter.raws.l$"CHAPTER 1")
+#write.csv(x, "striken_land_c1.csv")
+#getwd()
+
+#*suma las frecuencias de palabras para el capitulo seleccionado
+sum(chapter.raws.l[[1]])
+
+#*cuenta las palabras (token words)
+length(chapter.raws.l[[1]])
+
+#**calculate the mean word frequency
+sum(chapter.raws.l[[1]])/length(chapter.raws.l[[1]]) 
+#**lo anterior pero de forma mas sencilla
+mean(chapter.raws.l[[1]])
+
+
+
+# 6.3 Extracting Word Usage Means #
+#**calculate the mean word frequency for all chapters
+#** Mean word usage is one way of thinking about lexical variety (p. 65)
+lapply(chapter.raws.l,mean)
+
+#*organiza o simplifica el despliegue de lo anterior
+mean.word.use.m <- do.call(rbind, lapply(chapter.raws.l,mean))
+
+dim(mean.word.use.m)
+
+#*grafico de lo calculado
+plot(mean.word.use.m, type="h")
+
+#**normalizacion de lo calculado para todos los capitulos; muestra las desviaciones respecto a la media para cada capitulo
+scale(mean.word.use.m)
+
+#**grafica de normalizacion
+plot(scale(mean.word.use.m), type="h")
+
+# 	6.4 Ranking the Values 	#
+#** rank in decreasing rank order; it return a vector of numbers 
+order(mean.word.use.m)
+order(mean.word.use.m, decreasing=TRUE)
+
+#** reorder vector of means 
+mean.word.use.m[order(mean.word.use.m, decreasing=TRUE),]
