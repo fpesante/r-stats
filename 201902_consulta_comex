@@ -1,0 +1,29 @@
+library(dplyr)
+install.packages("dplyr")
+ce20190219 <- read.csv("https://datos.estadisticas.pr/dataset/92d740af-97e4-4cb3-a990-2f4d4fa05324/resource/b4d10e3d-0924-498c-9c0d-81f00c958ca6/download/ftrade2018_11.csv")
+print(ce20190219[1:10,])
+
+colnames(ce20190219)
+
+ce20190219 %>%
+select(Trade, Year, Commodity_Code, Commodity_Short_Name, Commodity_description, data, 
+sitc, SITC_Short_Desc, SITC_Long_Desc, naics, NAICS_description, end_use_i, end_use_e, hts_desc, unit_1, qty_1, unit_2, qty_2, ves_val_mo, rev_data)
+
+#ce20190219 %>%
+#filter(naics %in% c("336112", "336112", "336120", "336991"))
+
+ce20190219 %>%
+filter(naics %in% c("336112", "336112", "336120", "336991") & Year == "2017")
+
+x <- ce20190219 %>%
+filter(naics %in% c("336111", "336112", "336120", "336991") & Year == "2017")
+
+write.csv(x, file ="irf2017.csv")
+getwd()
+
+
+
+
+#referencia: 
+# Selecting columns and renaming are so easy with dplyr https://blog.exploratory.io/selecting-columns-809bdd1ef615
+# Filtering Data with dplyr https://blog.exploratory.io/filter-data-with-dplyr-76cf5f1a258e
