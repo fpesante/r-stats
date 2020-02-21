@@ -13,6 +13,7 @@ Random Sample
   v2 <- c(6,7,8,9,10)
   x <- c(v1,v2)
   sort(sample(x, 3))
+  sort(sample(1:40, 6))
   
  View(x)
  head(x)
