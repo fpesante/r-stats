@@ -1,0 +1,15 @@
+x <-read.csv("https://datos.estadisticas.pr/dataset/bc0de091-b513-4b48-bfaa-c238522e180a/resource/953fa091-2fc3-4020-8c3e-77b79c2bc0eb/download/regdem-defunciones-01-enero-2017-hasta-agosto-1-2020.csv")
+head(x)
+dim(x)
+
+library(dplyr)
+#install.packages("dplyr")
+
+colnames(x)
+
+x2017 <- filter(x, DeathDate_Year == "2017")
+
+head(x2017)
+
+#getwd() o setwd()
+write.csv(x2017, file="defunciones2017.csv", row.names = F)
