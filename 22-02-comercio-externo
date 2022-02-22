@@ -1,0 +1,51 @@
+install.packages("dplyr")
+library(dplyr)
+ftrade09_21 <-read.csv("C:/Users/francisco.pesante/Downloads/ftrade_j`ul2009-dic2021/ftrade_jul09.csv")
+
+head(ftrade09_21)
+tail(ftrade09_21)
+dim(ftrade09_21)
+###############################
+i_ftrade09_21 <-filter(ftrade09_21,Trade %in% "i")
+i_ftrade21 <-filter(i_ftrade09_21,Year %in% "2021")
+i_ft21 <- sum(i_ftrade21$data)
+###############################
+e_ftrade09_21 <-filter(ftrade09_21,Trade %in% "e")
+e_ftrade21 <-filter(e_ftrade09_21,Year %in% "2021")
+e_ft21 <- sum(e_ftrade21$data)
+
+###############################
+i_ftrade20 <-filter(i_ftrade09_21,Year %in% "2020")
+i_ft20 <- sum(i_ftrade20$data)
+###############################
+e_ftrade20 <-filter(e_ftrade09_21,Year %in% "2020")
+e_ft20 <- sum(e_ftrade20$data)
+
+###############################
+i_ftrade19 <-filter(i_ftrade09_21,Year %in% "2019")
+i_ft19 <- sum(i_ftrade19$data)
+###############################
+e_ftrade19 <-filter(e_ftrade09_21,Year %in% "2019")
+e_ft19 <- sum(e_ftrade19$data)
+
+###############################
+i_ftrade18 <-filter(i_ftrade09_21,Year %in% "2018")
+i_ft18 <- sum(i_ftrade18$data)
+###############################
+e_ftrade18 <-filter(e_ftrade09_21,Year %in% "2018")
+e_ft18 <- sum(e_ftrade18$data)
+
+###############################
+i_ftrade17 <-filter(i_ftrade09_21,Year %in% "2017")
+i_ft17 <- sum(i_ftrade17$data)
+###############################
+e_ftrade17 <-filter(e_ftrade09_21,Year %in% "2017")
+e_ft17 <- sum(e_ftrade17$data)
+
+
+years <- c(2021,2020,2019,2018,2017)
+imports <- c(i_ft21,i_ft20,i_ft19,i_ft18,i_ft17)
+exports <- c(e_ft21,e_ft20,e_ft19,e_ft18,e_ft17)
+
+dfrm <- data.frame(years,imports,exports)
+dfrm
