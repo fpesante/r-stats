@@ -1,0 +1,31 @@
+# dplyr tutorial | how to use dplyr pipe operator | R Programming tutorial 
+# https://www.youtube.com/watch?v=P8idxYm8m64
+library(dplyr)
+arrange(mtcars, cyl, am)
+mtcars %>% arrange(cyl, am)
+mtcars %>% arrange(desc(cyl), am)
+mtcars %>% select(mpg, cyl) %>% arrange(mpg)
+
+# The Pipe-Operator - %＞% - in R | Tips and Tricks in R
+# https://www.youtube.com/watch?v=3PMBr1RhdqM
+# The pipe-operator (%>%) make it possible to express a sequence of multiple operations (susch as method calls) in a compact and clear form.
+library(magrittr)
+#library(tidyverse)
+
+x <- 1:10
+summary(x)
+#or
+x %>% summary()
+
+
+trees
+summary(select(trees, Height, Volume))
+#or
+trees %>%
+	select(Height, Volume) %>%
+	summary()
+	
+trees %>%
+	select(Height, Volume) %>%
+	filter(Height > 80) %>%
+	summary()
