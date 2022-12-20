@@ -1,0 +1,43 @@
+??ascombe
+
+require(stats); require(graphics)
+anscombe
+
+ff <- y ~ x
+
+mods <- setNames(as.list(1:4), paste0("lm", 1:4))
+
+# MODELOS PARA 4 CONJUNTOS DE DATOS
+
+for(i in 1:4) {
+	ff[2:3] <- lapply(paste0(c("y","x"), i), as.name)
+	## or ff[[2]] <- as.name(paste0("y", i))
+	## ff[[3]] <- as.name(paste0("x", i))
+	mods[[i]] <- lmi <- lm(ff, data = anscombe)
+	print(anova(lmi))
+	}
+
+# GRAFICO DE REGRESION LINEAL SIMPLE
+
+op <- par(mfrow = c(2, 2), mar = 0.1+c(4,4,1,1), oma = c(0, 0, 2, 0))
+
+for(i in 1:4) {
+	ff[2:3] <- lapply(paste0(c("y","x"), i), as.name)
+	plot(ff, data = anscombe, col = "red", pch = 21, bg = "orange", cex = 1.2,
+	xlim = c(3, 19), ylim = c(3, 13))
+	abline(mods[[i]], col = "blue")
+	}
+
+mtext("Anscombe's 4 Regression data sets", outer = TRUE, cex = 1.5)
+
+par(op)
+
+par(mfrow=c(2,2))
+
+plot(mods[[1]], col = "red", pch = 21, bg = "orange", cex = 1.2)
+plot(mods[[2]], col = "red", pch = 21, bg = "orange", cex = 1.2)
+plot(mods[[3]], col = "red", pch = 21, bg = "orange", cex = 1.2)
+plot(mods[[4]], col = "red", pch = 21, bg = "orange", cex = 1.2)
+
+# Fuente: https://www.maximaformacion.es/blog-dat/errores-comunes-que-puedes-evitar-con-un-simple-grafico/
+# Referencia: https://www.sjsu.edu/faculty/gerstman/StatPrimer/anscombe1973.pdf
