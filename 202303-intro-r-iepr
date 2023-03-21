@@ -1,0 +1,151 @@
+#########################################
+#	Entrada de datos (vectores)			#
+#########################################
+
+# Asignacion de valores
+## Vectores
+a <- c(1,2,3)	#une elementos en un vector
+a2 <- c(1:5)	#secuencia de enteros
+
+b <- c("a","b","c")
+
+
+x <- c("Jacob Wiley", "Kristian Doolittle", "Angel Rodriguez", "Ismael Romero", "Javier Mojica")
+y <- c(80, 79, 71, 81, 73)
+z <- c(220, 232, 180, 220, 180)
+
+# Fuente: https://www.bsnpr.com/equipos/equipo?anio=2022&liga=1&serie=1&e=9&d=20220308&mes=03&dia=08&B1=Ver
+# https://basketball.eurobasket.com/player/Jacob-Wiley/348923
+
+#################################################
+#	Entrada de datos (listas)			#
+#################################################
+# Permite combinar variables de diferentes tipos (cuantitativa y cualitativas)
+
+#####################################
+#		Operaciones basicas			#
+#####################################
+x + y
+x - y
+x * y
+x / y
+x^2     #elevado/exponentes
+x%%y    #el resto de dividir x por y
+x%/%y   #cociente de dividir x por y, redondeado
+
+calculos con vectores 
+x <- 1:3
+y
+#########################################
+#		Estadisticas basicas			#
+#########################################
+mean(y)
+mean(z)
+median(y)
+var(y)	#varianza de la muestra: medida de dispercion que representa la variabilidad de una seerie de datos respetcto a su media.
+sd(y)	#desviacion estandar: raiz cuadrada de la varianza
+cor(y, z)
+range   #rango
+sum     #suma
+diff    #diferencia entre numeros consecutivos
+prod    #producto
+cumsum  #suma acumulada
+quantile    #cuantiles
+abs         #valor absoluto
+
+log     #logaritmo
+exp  #exponencial
+sqrt   #raiz cuadrada
+factorial   #factorial x!
+choose      #combinatoria
+
+?cor
+
+###########################################
+#	Organizacion de datos en matriz	#
+###########################################
+
+matrix(data = c("Jacob Wiley", "Kristian Doolittle", "Angel Rodriguez", "Ismael Romero", "Javier Mojica", 80, 79, 71, 81, 73, 220, 232, 180, 220, 180),
+       nrow = 5,
+       ncol = 3,
+       byrow = FALSE)
+
+matrix(data = c(x,y,z),
+       nrow = 5,
+       ncol = 3,
+       byrow = FALSE)
+#######################################################
+#	Organizacion de datos en tabla (data frame)	#
+#######################################################
+data.frame(df, stringAsFactors = TRUE)
+
+df <- data.frame(x,y,z)
+df
+
+names(df) <- c("jugador", "peso", "altura")
+df
+
+str(df)	#atributos del data frame
+
+## Procesamiento ##
+df[,2]
+mean(df[,2])
+
+mean(df[,3])
+
+## Matrix -> Data.Frame
+```{r}
+Performance <- matrix(c(794,86,150,570),
+                      nrow = 2,
+                      dimnames = list("Survey1st" = c("Approve", "Disapprove"),
+                                      "Survey2nd" = c("Approve", "Disapprove")))
+Performance
+as.data.frame(as.table(Performance))
+#################################################
+#	Consulta de archivos externos			#
+#################################################
+
+# Directorio de trabajo
+getwd()
+setwd()
+
+vaq2022 <- read.csv("C:/Users/francisco.pesante/Documents/2023-02/ejercicio-jugadores-bsn.csv")	#issues por acento
+vaq2022 <- read.csv("C:/Users/francisco.pesante/Documents/2023-02/ejercicio-jugadores-bsn-8.csv")	#formato csv utf-08
+head(vaq2022)
+
+#############################################################
+#	Procesamiento y generacion de archivos externos		#
+#############################################################
+mean(vaq2022$Altura)
+mean(y)
+
+#Determine el Indice de Masa Corporal
+# cual es la formula del indice de masa corporal pulgada y libras?
+# La formula para calcular el Índice de Masa Corporal (IMC) en libras y pulgadas es [1][2]: IMC = Peso en libras x 703 / Altura en pulgadas al cuadrado [3][2]. Por ejemplo, si una persona pesa 165 libras y mide 5 pies y 4 pulgadas [4], su IMC se calcularía de la siguiente manera: IMC = 165 x 703 / (64)^2 = 24.9.
+#  Peso en libras x 703 / Altura en pulgadas al cuadrado [3][2]. Por ejemplo, si una persona pesa 165 libras y mide 5 pies y 4 pulgadas [4], su IMC se calcularía de la siguiente manera: IMC = 165 x 703 / (64)^2 = 24.9.
+# 1. Calculadora del IMC para adultos: Sistema ingls | Peso Saludable ...
+# https://www.cdc.gov/healthyweight/spanish/assessing/bmi/adult_bmi/english_bmi_calculator/bmi_calculator.html
+# 2. La mejor forma de perder peso y no volver a ganarlo
+# http://www.clevelandclinic.org/health/shic/html/s4662.asp?index=4662
+# 3. Cmo determinar el ndice de masa corporal en adolescentes
+# https://www.stanfordchildrens.org/es/topic/default?id=determining-body-mass-index-for-teens-90-P04698
+# 4. Determinacin del ndice de masa corporal en los adolescentes
+# https://myhealth.ucsd.edu/Spanish/RelatedItems/90,P04698
+
+
+bmi <- (vaq2022$Peso*703)/(vaq2022$Altura^2)
+bmi
+mean(bmi)	#como se interpreta
+
+tmp <-cbind(vaq2022, bmi)
+
+write.csv(tmp, "C:/Users/francisco.pesante/Documents/2023-02/Vaq_2022_BMI.csv")
+
+#####################################
+#	Generacion de graficos		#
+#####################################
+
+hist(tmp$bmi, breaks = 6, col = "yellow", xlab = "IMC", ylab = "Frecuencia", main = "IMC jugadores Vaqueros Bayamon")
+
+boxplot(tmp$bmi, main="IMC jugadores Vaqueros Bayamon",
+   xlab="jugadores", ylab="IMC")
