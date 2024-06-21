@@ -1,0 +1,12 @@
+## Tidy Flowchart Generator
+# fuente: https://bruigtp.github.io/flowchart/
+install.packages("flowchart")
+library(flowchart)
+safo |>
+  as_fc("Patientes assessed for eligibility") |>
+  fc_filter(!is.na(group), label = "Randomized", show_exc = TRUE) |>
+  fc_split(group) |>
+  fc_filter(itt == 1, label = "Included in intention-to-treat\n
+            population") |>
+  fc_filter(pp == 1, label = "Included in per-protocol\n population") |>
+  fc_draw()
