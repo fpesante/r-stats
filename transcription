@@ -1,0 +1,24 @@
+# Remove timestamp from youtube transcription
+# Sample transcript with timestamps
+transcript <- c("0:00 Jensen Huang Co-founder and CEO of",
+                "0:02 NVIDIA",
+                "0:02 the company that is at the heart of AI",
+                "0:04 revolution recently made a comment about",
+                "0:07 what kids should learn in the future?",
+                "0:09 And Let me spoil it to you.",
+                "0:10 It's not computer science or programming.")
+
+# Combine the lines into a single character string
+transcript_text <- paste(transcript, collapse = " ")
+
+# Use gsub to remove timestamps
+cleaned_transcript <- gsub("\\b\\d{1,2}:\\d{2}\\b", "", transcript_text)
+
+# Remove extra spaces
+cleaned_transcript <- gsub("\\s+", " ", cleaned_transcript)
+
+# Trim leading and trailing spaces
+cleaned_transcript <- trimws(cleaned_transcript)
+
+# Print the cleaned transcript
+print(cleaned_transcript)
