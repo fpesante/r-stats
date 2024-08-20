@@ -1,0 +1,257 @@
+############# 02 Censo Decenal ###################
+#install.packages(c("tidycensus","tidyverse","ggspatial","scales","mapdeck"))
+library(tidycensus)
+library(tidyverse)
+library(ggspatial)
+library(scales)
+library(mapdeck)
+
+#census_api_key(key = "", install = TRUE)
+#census_api_key(key = "", overwrite = TRUE) #para computadoras compartidas
+
+setwd("~/repaso-contenido-talleres")
+
+var_censo_2000 <- load_variables(year=2000,
+                                 dataset = "sf3")
+
+var_censo_2010 <- load_variables(year=2010,
+                                 dataset = "sf1")
+
+viv_oca <- get_decennial(year = 2010,
+                         state = "PR",
+                         variable = c("H005001","H005006"),
+                         geography = "county",
+                         sumfile = "sf1",
+                         geometry = TRUE,
+                         output = "wide") %>% 
+  mutate(porc = (H005006/H005001)*100)
+
+mapa_viv_oca <- viv_oca %>% 
+  ggplot(aes(fill = porc)) +
+  geom_sf() +
+  theme_void() +
+  scale_fill_gradient(low = "lightblue", high = "darkblue",
+                      limits = c(0,100),
+                      breaks =c(25,50,75,100),
+                      labels = c("0-24","25-49","50-74","75-100")) +
+  labs(title = "Mapa: Porciento de viviendas de uso temporal,
+       recreacional u ocasoinal en Puerto Rico 2010",
+       caption = "Fuente: Censo Decenal 2010, Oficina del Censo de los EE.UU.\n Creado por FPG") +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.caption = element_text(hjust = 0.01),
+        legend.position = c(0.91,-0.001)) +
+  guides(fill=guide_legend(title="Porciento de \n viviendasa")) +
+  annotation_north_arrow(location = "tl", style = north_arrow_fancy_orienteering(),
+                         height = unit(1.5, "cm"), width = unit(1.5, "cm"),
+                         pad_x = unit(0.25, "cm"), pad_y = unit(-.03, "cm"))
+
+mapa_viv_oca
+ggsave("C:~mapa_vivienda_oca.jpeg", plot= mapa_viv_oca, width = 7, height =3, dpi=300)
+
+var_censo_2020 <- load_variables(year = 2020,
+                                 dataset = "pl")
+
+viv_desocup <- get_decennial(year = 2020,
+                             state = "PR",
+                             variables = c("H1_001N","H1_002N","H1_003N"),
+                             geography = "county",
+                             sumfile = "pl",
+                             output = "wide",
+                             geometry = TRUE)
+viv_desocup <- viv_desocup %>% 
+ mutate(pocp = (H1_002N/H1_001N)*100,
+         pdes = (H1_003N/H1_001N)*100)
+
+mapa_viv_desocup <- viv_desocup %>% 
+  ggplot(aes(fill=pdes)) +
+  geom_sf() +
+  theme_void() +
+  scale_fill_continuous() +
+  scale_fill_gradient(low = "#f2c4ff", high = "#3f064f",
+                      limits = c(0,60),
+                      breaks = c(15,60,45,60),
+                      labels = c("0-15","16-29","30-45","46-60")) +
+  labs(ttle = "Mapa: Porciento de viviendas desocupadas en Puerto Rico 2020",
+       caption = "Fuente: Censo Decenal 2010, Oficina del Censo de los EE.UU.\n Credo por Francisco Pesante") +
+  guides(fill = guide_legend(title = "Porciento de viviendas\n desocupadas")) +
+  theme(plot.title = element_text(hjust = 0.5), plot.caption = element_text(hjust = 0.01)) +
+  annotation_north_arrow(location = "tl", style = north_arrow_fancy_orienteering(),
+                         height = unit(1.5, "cm"), width = unit(1.5,"cm"),
+                         pad_x = unit(0.25, "cm"), pad_y = unit(-0.3, "cm"))
+
+mapa_viv_desocup
+ggsave("C:~mapa_viv_desocup.jpeg", plot= mapa_viv_oca, width = 7, height =3, dpi=300)
+############# 03 Censo Decenal ###################
+prpob <- tidycensus::get_decennial(geography = "block",
+                       state = "PR",
+                       #county = "San Juan",
+                       year = 2020,
+                       variables = "P1_001N",
+                       sumfile = "pl",
+                       output = "wide",
+                       geometry = TRUE)
+
+install.packages("terra")
+library(terra) #para activar: as_dot_density
+prpob_dots <- tidycensus::as_dot_density(prpob, value = "P1_001N",
+                               values_per_dot = 100)
+                               #erase_water = TRUE
+
+
+municipios <- tidycensus::get_decennial(year = 2020,
+                            state = "PR",
+                            variables = "P1_001N",
+                            geography = "county",
+                            sumfile = "pl",
+                            geometry = TRUE,
+                            output = "wide")
+
+library(ggplot2)
+mapa_puntos <- ggplot()+
+  geom_sf(data = municipios) +
+  geom_sf(data= prpob_dots, aes(color = "P1_001N"),
+          size = 0.0000000001, show.legend = TRUE) +
+  labs(title = "Mapa de Punto de la población de Puerto Rico 2020",
+       caption = "Fuente de datos: Censo Decenal 2020, Oficina del Censo de los EE.UU.") +
+  theme_void() +
+  theme(plot.title =element_text(hjust=0.5)) +
+  annotation_scale(location ="bl", width_hint = 0.1, plot_unit = "mi",
+                   pad_x = unit (5, "cm"), pad_y = unit(-0.0001, "cm")) +
+  annotation_north_arrow(location = "tr", style = north_arrow_fancy_orienteering(),
+                         height =unit(1.5, "cm"),width = unit(1.5, "cm"),
+                         pad_x = unit(0.25, "cm"), pad_y = unit(-0.3,"cm"))
+
+mapa_puntos
+
+ggsave("C:~repaso-contenido-talleres/mapa_vivienda_oca.jpeg", plot= mapa_puntos, width = 7, height =3, dpi=300)
+
+############# 01 ACS ###################
+
+var_acs1_2021 <- load_variables(year = 2021,
+                                dataset = "acs1")
+
+acs1 <- get_acs(geography = "county",
+                state = "PR",
+                county = c("Bayamon","San Juan","Guaynabo","Carolina","Caguas","Trujillo Alto"),
+                year = 2010,
+                survey = "acs1",
+                variables = "B25058_001", #mediana de renta
+                output = "wide",
+                geometry = TRUE) %>% 
+  mutate(NAME = str_remove(NAME, "Municipio, Puerto Rico"))
+
+acs1_2 <- get_acs(geography = "county",
+                state = "PR",
+                county = c("Bayamon","San Juan","Guaynabo","Carolina","Caguas","Trujillo Alto"),
+                year = 2021,
+                survey = "acs1",
+                variables = "B25058_001", #mediana de renta
+                output = "wide",
+                geometry = FALSE) %>% 
+  mutate(NAME = str_remove(NAME, "Municipio, Puerto Rico"))
+
+acs1_3 <- merge(x = acs1, y = acs1_2, by = c("NAME","GEOID")) %>% 
+  mutate(cambio = ((B25058_001E.y - B25058_001E.x)/B25058_001E.x)*100,
+         cambio1 = ((B25058_001E.y - B25058_001E.x)/B25058_001E.x))
+
+acs1_mapa <- acs1_3 %>% ggplot(aes(fill = cambio1)) +
+  geom_sf() +
+  theme_void() +
+  scale_fill_viridis_c(labels = scales::percent) +
+  labs(title = "Mediana de renta por municipio 2017-2021") +
+  guides(fill = guide_legend(title = "Mediana de renta"))
+
+acs1_mapa
+ggsave("C:~03-academia-2024-2025-sem1/repaso-contenido-talleres/renta.jpeg", plot = acs1_mapa, width = 7, height =3, dpi=300)
+
+############# 02 ACS ###################
+acs1_graf <- acs1_3 %>% 
+  ggplot(aes(x = NAME, weight = cambio)) +
+  geom_bar(fill = "#590b59") +
+  labs(title = "Cambio porcentual de la mediana de renta por municipio entre 2019 y 2021",
+       x = "Municipio",
+       y = "Porciento") +
+  geom_text(aes(label = scales::comma(after_stat(count))), stat = "count", vjust = 1.1, colour = "white") +
+  theme_minimal()
+acs1_graf
+ggsave("C:/~/graf_cambio_renta.jpeg", plot = acs1_graf, width = 10, height =5, dpi=300)
+
+############# 03 ACS ###################
+library(ggplot2)
+library(tidycensus)
+adjuntas_emigracion_interna <- get_flows(geography = "county",
+                                         state = "PR",
+                                         county = "adjuntas",
+                                         year = 2020,
+                                         geometry = TRUE) %>% 
+  filter(variable == "MOVEDOUT" & estimate >=1 & str_detect(GEOID2, "^72")) %>% 
+  arrange(desc(estimate))
+adj_em_in <- sum(adjuntas_emigracion_interna$estimate)
+
+adjuntas_inmigracion_interna <- get_flows(geography = "county",
+                                          state = "PR",
+                                          county = "adjuntas",
+                                          year = 2020,
+                                          geometry = TRUE) %>% 
+  filter(variable == "MOVEDIN" & estimate >=1 & str_detect(GEOID1, "^72")) %>% 
+  na.omit() %>% 
+  arrange(desc(estimate)) %>% 
+  slice_max(estimate, n = 5)
+adj_in_in <- sum(adjuntas_inmigracion_interna$estimate)
+
+adjuntas_emigracion_externa <- get_flows(geography = "county",
+                                         state = "PR",
+                                         county = "adjuntas",
+                                         year = 2020,
+                                         geometry = TRUE) %>% 
+  filter(variable == "MOVEDOUT" & estimate >=1 & GEOID2 < 72005) %>% 
+  na.omit() %>% 
+  arrange(desc(estimate)) 
+adj_em_ex <- sum(adjuntas_emigracion_externa$estimate)
+  
+
+adjuntas_inmigracion_externa <- get_flows(geography = "county",
+                                         state = "PR",
+                                         county = "adjuntas",
+                                         year = 2020,
+                                         geometry = TRUE) %>% 
+  filter(variable == "MOVEDIN" & estimate >=1 & GEOID2 < 72005) %>% 
+  na.omit() %>% 
+  arrange(desc(estimate)) 
+adj_in_ex <- sum(adjuntas_inmigracion_externa$estimate)
+
+#Visualizacion de 
+library(dplyr)
+library(mapdeck)
+token <- "API KEY HERE"
+
+
+adjuntas_emigracion_interna %>% 
+  mapdeck( #pitch = 45,
+    token = token) %>% 
+  add_arc(origin = "centroid1",
+          destination = "centroid2",
+          stroke_width = "width")
+  
+adjuntas_emigracion_externa %>% 
+  mapdeck( #pitch = 45,
+    token = token) %>% 
+  add_arc(origin = "centroid1",
+          destination = "centroid2",
+          stroke_width = "width")
+
+adjuntas_inmigracion_interna %>% 
+  mapdeck( #pitch = 45,
+    token = token) %>% 
+  add_arc(origin = "centroid1",
+          destination = "centroid2",
+          stroke_width = "width")
+
+adjuntas_inmigracion_externa  %>% 
+  mapdeck( #pitch = 45,
+    token = token) %>% 
+  add_arc(origin = "centroid1",
+          destination = "centroid2",
+          stroke_width = "width")
+
+############# 01 ACS PUMS ###################
