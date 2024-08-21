@@ -11,3 +11,5 @@ classIntervals(t, 3, style = "jenks")
 # x <- read.csv("C:~/mapas/qgis/t_tpc_vector_natural_breaks.csv")
 # tpc <- (x[,2])
 # classIntervals(tpc, 3, style = "jenks")
+
+#date:2018
