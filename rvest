@@ -1,0 +1,333 @@
+# Academia - Webscraping: Poblacion de Puerto Rico (Wikipedia)
+# Preparado por Lanselotte Oliveras Vega, Ayudante de Proyectos Estadísticos
+################  WIKIPEDIA  ################
+#https://youtu.be/f581vGOgzpk
+# Librerías ---------------------------------------------------------------
+# Carga  y/o instala la librerías necesarias.
+
+if (!require("pacman")) install.packages("pacman")
+
+pacman::p_load('tidyverse', 'rvest', 'netstat','lubridate','readxl')
+
+# tidyverse  -≥ Colección de paquetes para ciencia de datos.
+# rvest      -≥ Para realizar webscraping
+# xlsx       -≥ Para leer y escribir archivos Excel
+
+# Configuración -----------------------------------------------------------
+# Opciones generales para la presentación de números en R.
+options(scipen = 100,  # Evitar la notación científica
+        digits = 4)    # Número de dígitos a mostrar después del punto decimal
+
+# Webscraping: Wikipedia --------------------------------------------------
+# Definición de la URL de la página de la que se extraerán los datos.
+poblacion_web <- rvest::read_html("https://es.wikipedia.org/wiki/Demograf%C3%ADa_de_Puerto_Rico")
+
+# Extracción de la tabla específica mediante XPath (Chrome) 
+# y conversión a un dataframe.
+poblacion <- poblacion_web %>% 
+  rvest::html_element(xpath = '//*[@id="mw-content-text"]/div[1]/table[2]') %>%
+  rvest::html_table(header = TRUE) 
+
+# Limpieza y preparación de datos.
+# Renombrar las columnas utilizando la primera fila y luego eliminar esa fila.
+colnames(poblacion) <- as.character(unlist(poblacion[1, ]))
+
+poblacion <- poblacion[-1, ] 
+
+# Limpiar y convertir la columna de población a numérico.
+poblacion$Población <- gsub("[^0-9]", "", poblacion$Población)
+
+poblacion$Población <- as.numeric(poblacion$Población)
+
+# Visualización de los datos.
+# Creación de un gráfico de líneas para mostrar la evolución de la población.
+grafica <- poblacion %>%
+  ggplot(aes(x = Año, y = Población, group = 1)) +
+  geom_line() +  # Línea que conecta los puntos
+  geom_point() +  # Puntos representando los datos
+  labs(title = "Evolución de la Población de Puerto Rico", 
+       x = "Año",
+       y = "Población") +
+  scale_y_continuous(labels = scales::comma) +  # Formato de números con comas
+  theme_minimal()  # Tema minimalista para el gráfico
+grafica
+
+ggsave(plot = grafica, "Graficas/Evolucion_poblacion_PR.jpeg",
+       width = 10, height = 6 )
+# Exportar datos en formato excel
+writexl::write_xlsx(poblacion, "~/poblacioPR_wikipedia.xlsx")
+
+rm(poblacion,poblacion_web, grafica)
+
+################  04 LBP  ################
+#https://youtu.be/Fy3C8T7w40c
+# Academia - Webscraping: Liga Profesional de Baseball
+# Preparado por Lanselotte Oliveras Vega, Ayudante de Proyectos Estadísticos
+
+# Librerías ---------------------------------------------------------------
+# Carga  y/o instala la librerías necesarias.
+
+if (!require("pacman")) install.packages("pacman")
+
+pacman::p_load('tidyverse', 'rvest')
+
+# tidyverse  -≥  Colección de paquetes para ciencia de datos.
+# rvest      -≥  realizar webscraping
+# lubridate  -≥  manipulación  de fechas
+# xlsx       -≥  leer y escribir archivos Excel
+
+# Configuración -----------------------------------------------------------
+# Opciones generales para la presentación de números en R.
+options(scipen = 100,  # Evitar la notación científica
+        digits = 4)    # Número de dígitos a mostrar después del punto decimal
+
+# Webscraping: Liga Profesional de Baseball -------------------------------
+LBP_web <- read_html("https://web.archive.org/web/20240417214835/https://www.ligapr.com/estadisticas/jugadores")
+
+LBP <- LBP_web %>% 
+  html_element(xpath = '//*[@id="batting-2"]/table') %>%
+  html_table(header = TRUE) 
+
+correlacion <- cor(LBP$H, LBP$R, use = "complete.obs")
+
+ggplot(data = LBP, aes(x = H, y = R)) +
+  geom_point(aes(color = BA), size = 3) +  # Puntos coloreados por el promedio de bateo
+  #scale_color_gradient(low = "blue", high = "red") +  # Gradiente de color
+  geom_smooth(method = "lm", se = FALSE, color = "black") +  # Línea de regresión
+  annotate("text", x = Inf, y = Inf, label = sprintf("Correlación: %.2f", correlacion), 
+           hjust = 3.5, vjust = 1.1, size = 5, color = "black") +  # Añadir la correlación en el gráfico
+  theme_minimal() +
+  labs(title = "Relación entre Hits y Carreras", x = "Hits", y = "Carreras")
+
+ggplot(data = LBP, aes(x = SLG, y = OPS, label = Nombre)) +
+  geom_point(color = "blue") +
+  # geom_text(aes(label = Nombre), hjust = 1.5, vjust = 1.5, size = 3) +
+  # geom_text_repel() +
+  theme_minimal() +
+  labs(title = "Slugging vs. OPS por Jugador", x = "Slugging", y = "OPS")
+
+
+################  05 CCE  ################
+#https://youtu.be/WtFpGs0neyU
+# Academia - Webscraping: CEE-JIPS
+# Preparado por Lanselotte Oliveras Vega, Ayudante de Proyectos Estadísticos
+
+# Librerías ---------------------------------------------------------------
+# Carga  y/o instala la librerías necesarias.
+
+if (!require("pacman")) install.packages("pacman")
+
+pacman::p_load('tidyverse', 'rvest', 'readxl','writexl','sf','mapview')
+
+# tidyverse  -≥  Colección de paquetes para ciencia de datos.
+# rvest      -≥  realizar webscraping
+# lubridate  -≥  manipulación  de fechas
+# xlsx       -≥  leer y escribir archivos Excel
+
+# Configuración -----------------------------------------------------------
+# Opciones generales para la presentación de números en R.
+options(scipen = 100,  # Evitar la notación científica
+        digits = 4)    # Número de dígitos a mostrar después del punto decimal
+
+# Webscraping: CEE-JIPs ---------------------------------------------------
+cee_web <- read_html("https://www.ceepur.org/directorio.htm")
+
+# Xpath
+JIPs <- cee_web %>% 
+  html_element(xpath = '//*[@id="miyazaki"]') %>%
+  html_table(header = TRUE) 
+
+# Selector
+JIPs1 <- cee_web %>% 
+  html_element(css = "#miyazaki") %>%
+  html_table(header = TRUE) 
+
+#miyazaki > tbody > tr > td:nth-child(4) > a
+
+nodos_enlaces <- cee_web %>% html_nodes('#miyazaki > tbody > tr > td:nth-child(4) > a')
+#miyazaki > tbody > tr:nth-child(1) > td:nth-child(4) 
+#Borrar -> :nth-child(1) 
+# Añadir -> > a 
+
+enlaces <- nodos_enlaces %>% html_attr('href')
+
+JIPs$GoogleMaps <- enlaces
+
+# coords <- enlaces %>% str_extract("(?<=maps/dir//)[\\d\\.-]+,[\\d\\.-]+")
+
+extraer_coordenadas <- function(url) {
+  # Dividir la URL en partes usando "/"
+  partes <- strsplit(url, "/")[[1]]
+  # Buscar la parte que contiene las coordenadas
+  coordenadas <- partes[which(sapply(partes, function(x) grepl(",", x)))]
+  # Retornar la primera coincidencia de coordenadas
+  return(coordenadas[1])
+}
+
+# Aplicar la función a todos los enlaces
+coords <- sapply(enlaces, extraer_coordenadas)
+
+
+coords_split <- str_split(coords, ",", simplify = TRUE) %>%
+  as.data.frame() %>%
+  rename("Latitude" = V1,
+         "Longitude" = V2)
+
+JIPs <- cbind(JIPs,coords_split)
+
+JIPs$Latitude <- as.numeric(JIPs$Latitude)
+JIPs$Longitude <- as.numeric(JIPs$Longitude)
+
+JIPs_sf <-  JIPs %>%
+  sf::st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326)
+
+mapview::mapview(JIPs_sf,
+                 col.regions = "darkviolet",
+                 zcol = "Municipios",
+                 legend = FALSE)
+################  06 DACO  ################
+#https://youtu.be/AYIJOzLoZ2I
+# Academia - Webscraping: Precio en bomba por marca (DACO)
+# Preparado por Lanselotte Oliveras Vega, Ayudante de Proyectos Estadísticos
+
+# Librerías ---------------------------------------------------------------
+# Carga  y/o instala la librerías necesarias.
+
+if (!require("pacman")) install.packages("pacman")
+
+pacman::p_load('tidyverse', 'rvest','lubridate', 'readxl','writexl')
+
+# tidyverse  -≥  Colección de paquetes para ciencia de datos.
+# rvest      -≥  realizar webscraping
+# lubridate  -≥  manipulación  de fechas
+# xlsx       -≥  leer y escribir archivos Excel
+
+# Configuración -----------------------------------------------------------
+# Opciones generales para la presentación de números en R.
+options(scipen = 100,  # Evitar la notación científica
+        digits = 4)    # Número de dígitos a mostrar después del punto decimal
+
+# Webscraping: Precio en bomba por marca (DACO) ---------------------------
+gasolina_web <- read_html("https://www.daco.pr.gov/recursos/estudios-economicos/datos-de-combustible/")
+
+Fecha <- format(Sys.Date(), "%Y-%m-%d") 
+
+# Función para extraer datos de gasolina de la pagina de DACO utilizando xpath 
+extraer_datos_gasolina <- function(gasolina_web, xpath) {
+  dato <- gasolina_web %>%
+    html_elements(xpath = xpath) %>%
+    html_text(trim = TRUE)
+  return(dato)
+}
+
+Puma <- extraer_datos_gasolina(gasolina_web,'//*[@id="cus_border_separater"]/div/div[2]/div/div/div/div[2]/div/div' )
+
+Gulf <- extraer_datos_gasolina(gasolina_web,'//*[@id="cus_border_separater"]/div/div[2]/div/div/div/div[3]/div/div')
+
+Ecomaxx <- extraer_datos_gasolina(gasolina_web,'//*[@id="cus_border_separater"]/div/div[2]/div/div/div/div[4]/div/div')
+
+Bita <- extraer_datos_gasolina(gasolina_web,'//*[@id="cus_border_separater"]/div/div[2]/div/div/div/div[5]/div/div')
+
+American_Gas <- extraer_datos_gasolina(gasolina_web,'//*[@id="cus_border_separater"]/div/div[2]/div/div/div/div[6]/div/div')
+
+Ultra_top_fuel <- extraer_datos_gasolina(gasolina_web,'//*[@id="cus_border_separater"]/div/div[2]/div/div/div/div[7]/div/div') 
+
+Texaco <- extraer_datos_gasolina(gasolina_web,'//*[@id="cus_border_separater"]/div/div[2]/div/div/div/div[8]/div/div')
+
+`76` <- extraer_datos_gasolina(gasolina_web,'//*[@id="cus_border_separater"]/div/div[2]/div/div/div/div[9]/div/div')
+
+Phillips <- extraer_datos_gasolina(gasolina_web,'//*[@id="cus_border_separater"]/div/div[2]/div/div/div/div[10]/div/div')
+
+Sol_Mobil <- extraer_datos_gasolina(gasolina_web,'//*[@id="cus_border_separater"]/div/div[2]/div/div/div/div[11]/div/div') 
+
+Shell <- extraer_datos_gasolina(gasolina_web,'//*[@id="cus_border_separater"]/div/div[2]/div/div/div/div[12]/div/div')
+
+
+datos_gas <- rbind(Puma, Gulf, Ecomaxx, Bita, American_Gas, 
+                   Ultra_top_fuel,Texaco, `76`, Phillips,  Sol_Mobil , Shell)
+
+# Inicializar vectores vacíos para los datos
+marcas <- c()
+precios_regulares <- c()
+precios_premium <- c()
+precios_diesel <- c()
+
+for (dato in datos_gas[,1]) {
+  # Asumiendo que el formato es 'MarcaPrecioTipo...', extraemos la marca hasta el primer dígito
+  marca <- sub("(\\D+).*", "\\1", dato)
+  
+  # Asegurarse de que la marca no tenga espacios en blanco al final
+  marca <- trimws(marca)
+  
+  # Extraer todos los precios
+  precios <- regmatches(dato, gregexpr("\\d+\\.\\d+", dato))[[1]]
+  
+  # Agregar los datos extraídos a los vectores
+  marcas <- c(marcas, marca)
+  precios_regulares <- c(precios_regulares, ifelse(length(precios) >= 1, precios[1], NA))
+  precios_premium <- c(precios_premium, ifelse(length(precios) >= 2, precios[2], NA))
+  precios_diesel <- c(precios_diesel, ifelse(length(precios) >= 3, precios[3], NA))
+}
+
+# Crear el dataframe
+datos_gas <- data.frame(
+  Marca = marcas,
+  Regular = as.numeric(precios_regulares),
+  Premium = as.numeric(precios_premium),
+  Diésel = as.numeric(precios_diesel),
+  Fecha = Fecha)
+
+datos_gas[8,1] <- "76"
+
+valor_original <- datos_gas[8, 2]
+datos_gas[8,2] <- substring(valor_original, 3, nchar(valor_original))
+
+#write.xlsx(datos_gas, "Datos/Precio_Gasolina.xlsx")
+
+datos_gas_completo <- read_excel("C:~/Precio_Gasolina.xlsx")
+
+datos_gas_completo_actualizado <- rbind(datos_gas_completo,datos_gas)
+
+datos_gas_completo_actualizado$Regular <- as.numeric(as.character(datos_gas_completo_actualizado$Regular))
+datos_gas_completo_actualizado$Premium <- as.numeric(as.character(datos_gas_completo_actualizado$Premium))
+datos_gas_completo_actualizado$Diésel <- as.numeric(as.character(datos_gas_completo_actualizado$Diésel))
+
+# Visualizacion
+# Transformar datos a formato largo
+datos_long <- pivot_longer(datos_gas_completo_actualizado,
+                           cols = c("Regular", "Premium", "Diésel"),
+                           names_to = "Tipo_Combustible", 
+                           values_to = "Precio")
+Sys.setlocale("LC_TIME", "Spanish")
+
+# Crear la gráfica con facetas para cada tipo de combustible
+grafico <- datos_long %>% 
+  ggplot(aes(x = Fecha, y = Precio, color = Marca)) +
+  geom_line() +
+  geom_point(size = 0.5) +
+  facet_wrap(~ Tipo_Combustible, scales = "fixed") +  # Escalas fijas para todas las facetas
+  labs(title = "Evolución de los Precios de los Combustibles por Marca",
+       x = "Fecha",
+       y = "Precio por Litro",
+       color = "Marca") +
+  theme_minimal()
+grafico
+# Exporta visualizacion
+ggsave(plot = grafico, "Graficas/Evolucion_precios_combustible.jpeg",
+       width = 10, height = 6 )
+# Exportar datos en formato excel
+writexl::write_xlsx(datos_gas_completo_actualizado, "C:~/Precio_Gasolina.xlsx")
+
+
+
+# myscript <- "C:~/Academia_scraping_DACO.R"
+# #Programar corrida de script
+# taskscheduleR::taskscheduler_create(taskname = "DACO_Combustible",
+#                                     rscript = myscript,
+#                                     startdate = "05/01/2024",
+#                                     schedule = "DAILY",
+#                                     starttime = "11:20")
+
+
+
+################  WIKIPEDIA  ################
