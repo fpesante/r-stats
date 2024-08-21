@@ -1,4 +1,5 @@
 ############# 02 Censo Decenal ###################
+#https://youtu.be/P08GXVzt5OY
 #install.packages(c("tidycensus","tidyverse","ggspatial","scales","mapdeck"))
 library(tidycensus)
 library(tidyverse)
@@ -9,7 +10,7 @@ library(mapdeck)
 #census_api_key(key = "", install = TRUE)
 #census_api_key(key = "", overwrite = TRUE) #para computadoras compartidas
 
-setwd("~/repaso-contenido-talleres")
+setwd("C:/~/repaso-contenido-talleres")
 
 var_censo_2000 <- load_variables(year=2000,
                                  dataset = "sf3")
@@ -46,7 +47,7 @@ mapa_viv_oca <- viv_oca %>%
                          pad_x = unit(0.25, "cm"), pad_y = unit(-.03, "cm"))
 
 mapa_viv_oca
-ggsave("C:~mapa_vivienda_oca.jpeg", plot= mapa_viv_oca, width = 7, height =3, dpi=300)
+ggsave("C:/~/repaso-contenido-talleres/mapa_vivienda_oca.jpeg", plot= mapa_viv_oca, width = 7, height =3, dpi=300)
 
 var_censo_2020 <- load_variables(year = 2020,
                                  dataset = "pl")
@@ -80,8 +81,9 @@ mapa_viv_desocup <- viv_desocup %>%
                          pad_x = unit(0.25, "cm"), pad_y = unit(-0.3, "cm"))
 
 mapa_viv_desocup
-ggsave("C:~mapa_viv_desocup.jpeg", plot= mapa_viv_oca, width = 7, height =3, dpi=300)
+ggsave("C:/~/repaso-contenido-talleres/mapa_viv_desocup.jpeg", plot= mapa_viv_oca, width = 7, height =3, dpi=300)
 ############# 03 Censo Decenal ###################
+#https://youtu.be/V8kikRMMP4s
 prpob <- tidycensus::get_decennial(geography = "block",
                        state = "PR",
                        #county = "San Juan",
@@ -123,10 +125,10 @@ mapa_puntos <- ggplot()+
 
 mapa_puntos
 
-ggsave("C:~repaso-contenido-talleres/mapa_vivienda_oca.jpeg", plot= mapa_puntos, width = 7, height =3, dpi=300)
+ggsave("C:/~/repaso-contenido-talleres/mapa_vivienda_oca.jpeg", plot= mapa_puntos, width = 7, height =3, dpi=300)
 
 ############# 01 ACS ###################
-
+#https://youtu.be/CArppu7VfuE
 var_acs1_2021 <- load_variables(year = 2021,
                                 dataset = "acs1")
 
@@ -162,9 +164,10 @@ acs1_mapa <- acs1_3 %>% ggplot(aes(fill = cambio1)) +
   guides(fill = guide_legend(title = "Mediana de renta"))
 
 acs1_mapa
-ggsave("C:~03-academia-2024-2025-sem1/repaso-contenido-talleres/renta.jpeg", plot = acs1_mapa, width = 7, height =3, dpi=300)
+ggsave("C:/~/repaso-contenido-talleres/renta.jpeg", plot = acs1_mapa, width = 7, height =3, dpi=300)
 
 ############# 02 ACS ###################
+#https://youtu.be/CDyrVSRH6X4
 acs1_graf <- acs1_3 %>% 
   ggplot(aes(x = NAME, weight = cambio)) +
   geom_bar(fill = "#590b59") +
@@ -174,9 +177,10 @@ acs1_graf <- acs1_3 %>%
   geom_text(aes(label = scales::comma(after_stat(count))), stat = "count", vjust = 1.1, colour = "white") +
   theme_minimal()
 acs1_graf
-ggsave("C:/~/graf_cambio_renta.jpeg", plot = acs1_graf, width = 10, height =5, dpi=300)
+ggsave("C:/~/repaso-contenido-talleres/graf_cambio_renta.jpeg", plot = acs1_graf, width = 10, height =5, dpi=300)
 
 ############# 03 ACS ###################
+#https://youtu.be/beoBe6UBux4
 library(ggplot2)
 library(tidycensus)
 adjuntas_emigracion_interna <- get_flows(geography = "county",
@@ -254,4 +258,275 @@ adjuntas_inmigracion_externa  %>%
           destination = "centroid2",
           stroke_width = "width")
 
-############# 01 ACS PUMS ###################
+############# 02 ACS PUMS ###################
+#https://youtu.be/ppIuXT8Hr_g
+library(tidycensus)
+library(tidyverse)
+library(scales)
+
+pums_vars_2021 <- pums_variables %>% 
+  filter(year == 2021, survey == "acs5", level == "person")
+
+#pums_vars <- c("DEYE","AGEP","SEX","SCHL","MAR","DDRS",
+#              "PINCP","OCCP","COM","WAGP","POVPIP",
+#              "PWGTP","INDP","PUMA","HICOV","NWAV","JWTRNS")
+
+pums_vars <- c("DEYE","AGEP","SEX","SCHL","MAR","DDRS",
+               "PINCP","OCCP","WAGP","POVPIP",
+               "PWGTP","INDP","HICOV","NWAV","JWTRNS")
+#se omite "COM" y "PUMA"
+
+view(pums_vars)
+ 
+pums_FL <- get_pums(state = "FL",
+                    year = 2021,
+                    survey = "acs5",
+                    variables = pums_vars)
+library(readr)
+pums <- read_csv("C:/~/repaso-contenido-talleres/psam_p72.csv") %>% 
+  select(pums_vars) %>% 
+  filter(DEYE == 1)
+
+str(pums)
+
+pums$SEX <- factor(pums$SEX,
+                   levels = 1:2, labels = c("Hombre","Mujer"))
+
+pums$SCHL <- as.numeric(pums$SCHL)
+pums <- pums %>% mutate(SCHL_r = case_when(SCHL == 1 ~ "No completo la escuela",
+                                           SCHL >= 2 & SCHL <= 14 ~ "No ha completado la escuela",
+                                           SCHL == 15 ~ "Cuarto ano sin diploma",
+                                           SCHL >= 16 & SCHL <= 17 ~ "Escuela Superior o Equivalente",
+                                           SCHL >= 18 & SCHL <= 19 ~ "Alguna educacion superior",
+                                           SCHL == 20 ~ "Grado asociado",
+                                           SCHL == 21 ~ "Bachillerato",
+                                           SCHL == 22 ~ "Maestria",
+                                           SCHL == 23 ~ "Grado profesional",
+                                           SCHL == 24 ~ "Doctorado"))
+
+pums$MAR <- factor(pums$MAR,
+                   levels = 1:5, labels = c("Casado",
+                                            "Viudo",
+                                            "Divorciado",
+                                            "Separado",
+                                            "Nunca casado"))
+                                           
+pums <- pums %>% mutate(grupoedad = case_when(
+  AGEP >= 0 & AGEP <= 9 ~ "09 Años o menos",
+  AGEP >= 10 & AGEP <= 19 ~ "10 a 19 años",
+  AGEP >= 20 & AGEP <= 29 ~ "20 a 29 años", 
+  AGEP >= 30 & AGEP <= 39 ~ "30 a 39 años",
+  AGEP >= 40 & AGEP <= 49 ~ "40 a 49 años",
+  AGEP >= 50 & AGEP <= 59 ~ "50 a 59 años",
+  AGEP >= 60 & AGEP <= 69 ~ "60 a 69 años",
+  AGEP >= 70 & AGEP <= 79 ~ "70 a 79 años",
+  AGEP >= 80 ~ "80 años o mas"))
+
+pums$DDRS <- factor(pums$DDRS,
+                    levels = 1:2, labels = c("si","no"))
+                                      
+#Salario        
+pums <- pums %>% mutate(WAGP_R = case_when(
+  WAGP <= 9999 ~ "9,999 dolares o menos",
+  WAGP >= 10000 & WAGP <= 19999 ~ "$10,000 a 19,000",
+  WAGP >= 20000 & WAGP <= 29999 ~ "$20,000 a 29,000", 
+  WAGP >= 30000 & WAGP <= 39999 ~ "$30,000 a 39,000",
+  WAGP >= 40000 & WAGP <= 49999 ~ "$40,0000 a 49,000",
+  WAGP >= 50000 & WAGP <= 59999 ~ "$50,000 a 59,000",
+  WAGP >= 60000 ~ "$60,000 o mas"))
+
+#Ingreso
+pums <- pums %>% mutate(PINCP_R = case_when(
+  WAGP <= 9999 ~ "9,999 dolares o menos",
+  WAGP >= 10000 & WAGP <= 19999 ~ "$10,000 a 19,000",
+  WAGP >= 20000 & WAGP <= 29999 ~ "$20,000 a 29,000", 
+  WAGP >= 30000 & WAGP <= 39999 ~ "$30,000 a 39,000",
+  WAGP >= 40000 & WAGP <= 49999 ~ "$40,0000 a 49,000",
+  WAGP >= 50000 & WAGP <= 59999 ~ "$50,000 a 59,000",
+  WAGP >= 60000 ~ "$60,000 o mas"))
+
+pums$HICOV <- factor(pums$HICOV,
+                     levels = 1:2, labels = c("Con cobertura medica",
+                                              "Sin cobertura medica"))
+
+# Analisis
+install.packages(c("epiDisplay","expss","sjPlot"))
+library(epiDisplay)
+library(expss)
+library(sjPlot)
+
+mean(pums$AGEP)
+median(pums$AGEP)
+fre(pums$grupoedad,
+    weight = pums$PWGTP,
+    drop_unused_labels = TRUE,
+    prepend_var_lab = FALSE,
+    stat_lab = getOption("expss.fre_stat_lab", c("Frecuencia","Valid percent","Percent",
+                                                 "Responses %","Cummulatives responses %")))
+
+#pums %>% 
+#  ggplot(aes(x = grupoedad, weight = PWGTP)) +
+#  geom_bar(show.legend = FALSE, fill = "#112446") +
+#  labs(
+#    x = "Sexo",
+#    y = "Numero de personas con dificultad visual",
+#    title = "Grafica: Numero de personas con dificultad visual",
+#    caption = "Fuente: PRCS 2015-2019") +
+#  scale_y_continuous(labels = scales::comma) +
+#  guides(fill = guide_legend(title = "Sexo")) +
+#  geom_text(aes(label = scales::comma(..count..)), stat = "count", vjust = 1.5, colour = "white") +
+#  theme_minimal()
+
+#Warning message:
+#The dot-dot notation (`..count..`) was deprecated in ggplot2 3.4.0.
+#ℹ Please use `after_stat(count)` instead.
+
+pums %>% 
+  ggplot(aes(x = grupoedad, weight = PWGTP)) +
+  geom_bar(show.legend = FALSE, fill = "#112446") +
+  labs(
+    x = "Sexo",
+    y = "Numero de personas con dificultad visual",
+    title = "Grafica: Numero de personas con dificultad visual",
+    caption = "Fuente: PRCS 2015-2019") +
+  scale_y_continuous(labels = scales::comma) +
+  guides(fill = guide_legend(title = "Sexo")) +
+  geom_text(aes(label = after_stat(count)), stat = "count", vjust = 1.5, colour = "white") +
+  theme_minimal()
+  
+#Sexo
+fre(pums$SEX,
+    weight = pums$PWGTP,
+    drop_unused_labels = TRUE,
+    prepend_var_lab = FALSE,
+    stat_lab = getOption("expss.fre_stat_lab", c("Frecuencia","Valid percent", "Percent",
+                                                 "Response %","Cummulatives responses %")))
+
+pums %>% 
+  ggplot(aes(x=SEX,weight = PWGTP)) +
+  geom_bar(show.legend = FALSE, fill = "#112446") +
+  labs(
+    x = "Sexo",
+    y = "Numero de personas con dificultad visual",
+    title = "Grafica: Numero de persona con dificultad visual por sexo 2017-2021",
+    caption = "Fuente: PRCS 2017-2021") +
+  scale_y_continuous(labels = scales::comma, breaks = c(10000,20000,
+                                                        30000,40000,
+                                                        50000,60000,
+                                                        70000,80000,
+                                                        90000,100000,
+                                                        110000,120000,
+                                                        130000)) +
+  guides(fill =  guide_legend(title = "Sexo")) +
+  geom_text(aes(label = ..count..), stat = "count", vjust = 1.5, colour = "white") + theme_minimal()
+
+pums %>% 
+  ggplot(aes(x = SEX, weight = PWGTP)) +
+  geom_bar(aes(y = (..count..)/sum(..count..)),show.legend = FALSE, fill = "#112446") +
+  geom_text(aes(label = scales::percent((..count..)/sum(..count..), accuracy = 0.01),
+                y = (..count..)/sum(..count..)), stat ="count", vjust = 1.5, colour = "white") +
+  labs(
+    x = "Sexo",
+    y = "Porciento de personas con dificultad visual",
+    title = "Grafica: Porciento de persona con dificultad visual por sexo 2017-2021",
+    caption = "Fuente: PRCS 2017-2021") +
+scale_y_continuous(labels = scales::percent) +
+  theme_minimal()
+
+
+#Crosstabs
+sjPlot::tab_xtab(var.row = pums$PINCP_R,
+                 var.col = pums$SEX,
+                 title = "Ingreso de personas con dificultad visual por sexo 2017-2021",
+                 var.labels = c("Ingreso","Sexo"),
+                 show.row.prc = TRUE,
+                 show.col.prc = TRUE,
+                 show.summary = FALSE,
+                 show.na = FALSE,
+                 encoding = "UTF-8",
+                 weight.by = pums$PWGTP)
+
+sjPlot::tab_xtab(var.row = pums$PINCP_R,
+                 var.col = pums$HICOV,
+                 title = "Ingreso de personas con dificultad visual por cubierta de salud 2017-2021",
+                 var.labels = c("Ingreso","Cubierta"),
+                 show.row.prc = TRUE,
+                 show.col.prc = TRUE,
+                 show.summary = FALSE,
+                 show.na = FALSE,
+                 encoding = "UTF-8",
+                 weight.by = pums$PWGTP)
+
+sjPlot::tab_xtab(var.row = pums$SEX,
+                 var.col = pums$DDRS,
+                 title = "Sexo de personas con dificultad visual por capacidad de autocuidado 2017-2021",
+                 var.labels = c("Sexo","Autocuidado"),
+                 show.row.prc = TRUE,
+                 show.col.prc = TRUE,
+                 show.summary = FALSE,
+                 show.na = FALSE,
+                 encoding = "UTF-8",
+                 weight.by = pums$PWGTP)
+
+
+DDRS
+## Regresion
+model <- lm(WAGP ~ SCHL_r, data = pums)
+summary(model)
+############# 01 estimados ###################
+#https://youtu.be/3TLIGuqmduM
+library(tidycensus)
+library(tidyverse)
+library(scales)
+
+estm <- get_estimates(geography = "state",
+                      product = "population",
+                      state = "PR",
+                      year = 2019)
+
+estm0 <- get_estimates(geography = "state",
+                      product = "components",
+                      state = "PR",
+                      year = 2019)
+
+estm00 <- get_estimates(geography = "state",
+                       product = "housing",
+                       state = "PR",
+                       year = 2019)
+
+estm1 <- get_estimates(geography = "state",
+                      product = "characteristics",
+                      breakdown = c("SEX","AGEGROUP"),
+                      breakdown_labels = TRUE,
+                       state = "PR",
+                       year = 2019)
+
+#Filtrar datos
+estm1 <- estm1 %>% filter(str_detect(AGEGROUP, "^Age"), SEX != "Both sexes") %>% 
+   mutate(value = ifelse(SEX == "Male", -value, value))
+
+#Reemplazar palabras en ingles
+estm1$AGEGROUP <- gsub("to", "a", estm1$AGEGROUP)
+estm1$AGEGROUP <- gsub("and", "o", estm1$AGEGROUP)
+estm1$AGEGROUP <- gsub("older","mas", estm1$AGEGROUP)
+estm1$AGEGROUP <- gsub("Age","",estm1$AGEGROUP)
+estm1$AGEGROUP <- gsub("years","años",estm1$AGEGROUP)
+estm1$AGEGROUP <- gsub("0 a 4 años","00 a 04 años",estm1$AGEGROUP)
+estm1$AGEGROUP <- gsub("5 a 9 años","05 a 09 años",estm1$AGEGROUP)
+estm1$SEX <- gsub("Male","Hombre", estm1$SEX)
+estm1$SEX <- gsub("Female","Mujer", estm1$SEX)
+  
+Piramide <- estm1 %>% ggplot(aes(x = AGEGROUP, y = value, fill = SEX)) +
+  geom_bar(stat = "identity", width = 1) +
+  theme_minimal() +
+  scale_y_continuous(labels = function(y) paste0(abs(y/1000), "k")) +
+  scale_fill_manual(values = c("navy","darkred")) +
+  coord_flip() +
+  labs(x = "",
+       y = "Numero de personas en miles",
+       title = "Piramide poblacional 2019",
+       subtitle = "Puerto Rico",
+       fill = "",
+       caption = "Fuente de datos: Estimados de poblacion de la Oficina del Censo de EE.UU.")
+Piramide
+ggsave("C:/~/repaso-contenido-talleres/piramide_poblacion_pr.jpeg")
