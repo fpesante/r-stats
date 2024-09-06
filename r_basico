@@ -1,0 +1,83 @@
+32 + 64
+64-32
+3*24
+24/3
+3^2
+65%%32
+66%/%32
+4^2 - 3*2
+(4^2) - (3*2)
+2^(-3)
+
+x <- 1:3
+y <- 2:4
+
+x + y
+
+max(x)
+min(x)
+range(x)
+
+"china" == "china"
+############### 03 Intro R ##################
+help()
+help(mean)
+?mean
+args(mean)
+sample(mean)
+help.start()
+RSiteSearch("mean")
+?reserved
+#https://statisticsglobe.com/message-warning-stop-function-in-r/
+############### 04 Intro R ##################
+x <- c(1:3)
+y <- c("a","b","c")
+z = c(TRUE,TRUE,FALSE)
+w = c(TRUE,FALSE,TRUE)
+z == w
+
+
+a <- c(1,2,3)
+b <- c("a","b","c")
+
+a + b
+c <- c(4,5,6)
+a + c
+
+a <- c(1:3)
+c <- c(4:6)
+
+a + c
+############### 05 Intro R ##################
+x <- c("Jacob Wiley","Kristian Doolittle","Angel Rodriguez")
+y <- c(80,79,81)
+z <- c(220,232,180)
+
+xyz <- matrix(data = c(x,y,z),
+       nrow = 3,
+       ncol = 3,
+       byrow = FALSE)
+#################
+data.frame(df, stringAsFactor = TRUE)
+df <- data.frame(x,y,z)
+df
+names(df) <- c("jugador", "altura", "peso")
+df
+
+str(df)
+df[1,]
+mean(df[,2])
+getwd()
+setwd("C:/~")
+vaq2022 <- read.csv("vaqueros2022.csv")
+vaq2022b <- read.csv("C:/~/Perfil jugadores Vaqueros Bayamon.csv")
+vaq2022b
+bmi <- (vaq2022b$Peso*703)/(vaq2022b$Altura^2)
+bmi
+tmp <- cbind(vaq2022b, bmi)
+write.csv(tmp, "vaq2022bmi.csv")
+#https://www.cdc.gov/healthyweight/assessing/bmi/adult_bmi/#InterpretedAdults
+#https://www.cdc.gov/healthyweight/assessing/bmi/childrens_BMI/childrens_BMI_formula.html
+############# 09 Intro R #####################
+hist(tmp$bmi, breaks = 6, col = "yellow", xlab = "IMC", ylab = "Frecuencia", main = "IMC jugadores Vaqueros Bayamon")
+boxplot(tmp$bmi, main = "IMC jugadores Vaqueros Bayamon")
