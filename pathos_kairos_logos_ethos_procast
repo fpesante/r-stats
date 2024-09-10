@@ -1,0 +1,32 @@
+# fuente: https://chatgpt.com/share/1bd38d7c-cc64-400d-841f-86f07c2e4829
+# referencia: https://youtu.be/arj7oStGLkU?si=Yg2eRJ58syk4UgE4
+# Install and load the required package
+if(!require(fmsb)) install.packages("fmsb")
+library(fmsb)
+
+# Define the categories and values for the radar chart
+categories <- c('Ethos', 'Pathos', 'Logos', 'Kairos')
+values <- c(7, 9, 8, 6)  # These values are estimates based on the rhetorical analysis
+
+# Radar chart requires a data frame format
+# Add max and min values for scaling
+data <- as.data.frame(rbind(c(10, 10, 10, 10), c(0, 0, 0, 0), values))
+colnames(data) <- categories
+
+# Create the radar chart
+radarchart(
+  data, 
+  axistype = 1,             # Type of axis
+  pcol = 'blue',            # Line color
+  pfcol = rgb(0, 0, 1, 0.25), # Fill color (semi-transparent blue)
+  plwd = 2,                 # Line width
+  cglcol = "grey",          # Grid line color
+  cglty = 1,                # Grid line type
+  caxislabels = NULL,       # No axis labels
+  axislabcol = "navy",      # Axis label color
+  vlcex = 1.2               # Font size for labels
+)
+
+# Add a title
+title(main = "Distribution of Rhetorical Appeals in Tim Urban's TED Talk", col.main = "navy", cex.main = 1.4)
+
