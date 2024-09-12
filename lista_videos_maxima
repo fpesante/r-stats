@@ -1,0 +1,180 @@
+01-01	RStudio
+01-02	RStudio
+01-03 	funciones aritmeticas; asignar valores a variables; tipos de valores; funciones
+01-04	RMarkdown
+-----------------------------------------------------------------------------------------
+02-01	importar y exportar datos; datos precargados; datos tabulares; datos online; datos en formatos de otros programas; analisis exploratorio de datos; library(GGally), ggpairs(); summary(data); with(data, stby(variables)); ctable(data$variable1, data$variable2); library(report), summary(report())
+
+02-02 	ggplot2 para visualizar datos: ggplot(data, aes(x,y)) 1. geom_bar() grafico de barras; 2. geom_point() diagrama de dispersion; 3. geom_line() grafico de linea; 4. geom_histogram() histograma; 5. geom_boxplot() grafico de cajas. Guardar grafico: ggsave(filename = "Grafico.jpg", plot = graf, dpi = 300)
+
+02-03	library(tidyverse): ggplot2, tidyr, dplyr, readr, purr, tibble, stringr, forcats. Pipes %>%. 
+
+Ejemplo: 
+	data("iris")
+	iris %>%
+		filter(Species == "versicolor") %>%
+		select(Species, Sepal.Length) %>%
+		head()
+
+library(dplyr): select(), filter(), mutate(), group_by(), summarise(), arrange().
+
+Ejemplo: data("storms")
+	storms %>%		#seleccion de variables
+		select(name,year,status) %>%
+		tail()
+
+	storms %>%		#excepcion a seleccion
+		select(-lat,-long) %>%
+		tail()
+
+	storms %>%		#orden de despliegue
+		select(lat,long, everything()) %>%
+		tail()
+
+	storms %>%
+		select(start_with("l")) %>%
+		head()
+
+	storms %>%
+		select(ends_with("er")) %>%
+		head()
+
+	storms %>%
+		select(contains("on")) %>%
+		head()
+
+	storms %>%
+		select_if(is.numeric) %>% #is.factor
+		glimpse()
+
+	iris %>%
+		filter(Species == "setosa", Sepal.Lenght >=4) %>%
+		head(2)
+
+	storms %>%		#filter variable categorica
+		select(name, category, status, wind) %>%
+		filter(name == "Caroline") %>%
+		head()
+	storms %>%		#filter 2 variables
+		select(name, category, status, wind) %>%
+		filter(name %in% c("Caroline","Amy")) %>%
+		str()
+
+	storms %>%		#filter variable numerica
+		select(name, category, status, wind) %>%
+		filter(wind > 70) %>%
+		head()
+
+	storms %>%		#filter 2 variables numericas
+		select(name, category, status, wind) %>%
+		filter(category ==1, wind > 70) %>%
+		head()
+
+	storms %>%		#filter entre 2 valores 
+		select(name, category, status, wind) %>%
+		filter(between(wind, 50, 70) %>%
+		head()
+
+	storms %>%		#filter valores aproximados
+		select(name, category, status, wind) %>%
+		filter(near(wind, 70, tol = 10)) %>%
+		head()
+
+	storms %>%		#filter valores dentro de la desviacion tipica
+		select(name, category, status, wind) %>%
+		filter(near(wind, 70, tol = sd(wind))) %>%
+		head()
+
+	iris %>%		#ordenar observaciones. por defecto, ascendente
+		arrange(Petal.Width) %>%
+		head()
+
+	iris %>%		#ordenar observaciones decendente
+		arrange(desc(Petal.Width)) %>%
+		head()
+
+	storms_new <- storms %>%
+		mutate(wind_ca = case_when(wind <= 40
+
+
+	iris %>%		#crear nuevas variables
+		mutate(PetalW = Petal.Width/100)) %>%
+		glimpse()
+
+	storms %>%		#crear nuevas variables con funcion "ifelse"
+		mutate(status_ts = ifelse(status == "tropical storm", 1,0)) %>%		#si se da la condicion, retorna 1
+		glimpse()
+
+	storms_new <- storms %>%		#crear nuevas variables: categorizar
+		mutate(wind_ca = case_when(wind <= 40 ~ "bajo",
+			wind > 40 & wind <=65 ~ "medio",
+			wind > 65 ~ "fuerte"))
+	storms_new$wind_ca <- as.factor(storms_new$wind_ca)
+	glimpse(storms_new)
+	summary(storms_new$wind_ca)
+	
+	iris %>%
+		group_by(Species) %>%		#agrupamos y calculamos
+		summarise(mean(Sepal.Width))
+
+	iris %>%
+		group_by(Species) %>%
+		summarise(mean(Sepal.Width)) %>% 
+		mutate(sd = sd(iris$Sepal.Width))
+
+	storms %>%
+		select(status, wind) %>%
+		group_by(status) %>%
+		summarise(Maz = max(wind), Avg = mean(wind), Min = min(wind))
+
+	storms %>%
+		select(status, wind, month) %>%
+		group_by(status, month) %>%
+		summarise(Maz = max(wind), Avg = mean(wind), Min = min(wind))
+
+02-04 Herramienta para organizar los datos estructurados: library(tidyr).: unite(), separate(), gather(), spread().
+
+unite()
+	storms %>%	#remueve las columnas de las variables agregadas
+		unite(fecha, year, month, day, sep = "-") %>%
+		head()
+
+	storms %>%	#para NO remover las columnas de las variables agregadas
+		tidyr::unite(fecha, year, month, day, sep = "-", remove = FALSE) %>%
+		head()
+
+	storms_fecha <- storms %>%
+		tidyr::unite(fecha, year, month, day, sep = "-") %>%
+		head(storms_fecha)
+
+separate()
+	storms_fecha <- storms %>%	#una columna dividirla en varias columnas
+		tidyr::separate(fecha, into = c("day", "month", "year"), sep = "-") %>%
+		head(storms_fecha)
+	storms_fecha <- storms %>%	
+		tidyr::separate(fecha, into = c("day", "month", "year"), sep = "-", remove = FALSE) %>%
+		head(storms_fecha)
+
+gather()
+	data("world_bank_pop")
+	world_gat <- world_bank_pop %>%	#de ancho a largo
+		tidyr::gather(key = "Year", value = "Population", 3:20)
+	world_gat
+
+spread()
+---------------------------------------------------------------------
+Herramienta para union de tablas como SQL: library(dplyr). Combinaciones: left_join(), right join, inner join, full join.
+
+left_join(), tabla principal con parte de tabla secundaria. Deben enlazarse mediante denominador comun.
+
+left_join(matematicas, lengua)
+dplyr::left_join(matematicas, historia, by = c("id" = "id_alum"))
+
+right_join(), tabla secundaria con datos compartidos e tabla principal.
+dplyr::right_join(matematicas, lengua)
+
+inner_join(), union de variables comunes en ambas tablas.
+dplyr::inner_join(matematicas, lengua)
+
+full_join(), se unen todos los datos de las 2 tablas.
+dplyr::full_join(matematicas, lengua)
