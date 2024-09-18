@@ -1,0 +1,22 @@
+library(ggplot2)
+library(data.table)
+
+troops <- fread("http://stat405.had.co.nz/data/minard-troops.txt")
+cities <- fread("http://stat405.had.co.nz/data/minard-cities.txt")
+
+plot_troops <- ggplot(troops, aes(long, lat)) +
+  geom_path(aes(size = survivors, color = direction,
+                group = group))
+
+plot_both <- plot_troops +
+  geom_text(aes(label = city), size = 4, data = cities)
+
+plot_polished <- plot_both +
+  scale_size(#to = c(1, 10),
+             breaks = c(1, 2, 3) * 10^5,
+             labels = scales::comma(c(1, 2, 3) * 10^5)) +
+  scale_color_manual(values = c("grey50","red")) +
+  xlab(NULL) +
+  ylab(NULL)
+
+#reference: https://vita.had.co.nz/papers/layered-grammar.pdf
