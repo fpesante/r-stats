@@ -1,0 +1,45 @@
+library(htmlwidgets)
+library(DiagrammeR)
+
+# Definir el contenido del diagrama
+diagram_content <- "
+  digraph flowchart {
+    # Configuración del gráfico
+    graph [rankdir = LR, fontname = 'Helvetica']
+    node [shape = rectangle, style = filled, fillcolor = LightBlue, fontname = 'Helvetica']
+    edge [color = Gray50]
+    
+    # Nodos
+    R_basico [label = 'R básico']
+    RStudio [label = 'RStudio']
+    RMarkdown [label = 'RMarkdown']
+    Tidycensus [label = 'Tidycensus']
+    GIS [label = 'GIS con R']
+    Webscraping [label = 'Webscraping']
+    
+    Excel_basico [label = 'Excel Básico']
+    Excel_intermedio [label = 'Excel Intermedio']
+    Tableau [label = 'Tableau']
+    
+    PRCS [label = 'PRCS']
+    PUMS [label = 'PUMS']
+    MAPS [label = 'MAPS']
+    
+    # Conexiones
+    R_basico -> RStudio
+    RStudio -> {RMarkdown Tidycensus GIS Webscraping}
+    
+    Excel_basico -> Excel_intermedio
+    Excel_intermedio -> Tableau
+    
+    PRCS -> {PUMS MAPS}
+    
+    # Ajuste de rangos para mejorar el diseño
+    {rank = same; R_basico; Excel_basico; PRCS}
+    {rank = same; RStudio; Excel_intermedio}
+    {rank = same; RMarkdown; Tidycensus; GIS; Webscraping; Tableau; PUMS; MAPS}
+  }
+"
+
+# Crear y mostrar el diagrama
+grViz(diagram_content)
