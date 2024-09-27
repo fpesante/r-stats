@@ -1,0 +1,25 @@
+#################################
+#   Creating Word Docs With R   #
+#################################
+
+#install.packages("officer")
+#install.packages("glue")
+library(officer)
+library(glue)
+library(knitr) #for glue::glue
+
+current_day <- lubridate::now() |> format('%Y-%m-%d')
+current_time <- lubridate::now() |> format('%H:%M')
+text_creation_time <- ftext(
+  glue::glue('This file was created with R on {current_day} at {current_time}.')
+)
+text_creation_time
+
+
+par_creation_time <- fpar(text_creation_time)
+read_docx() |>
+  body_add_fpar(par_creation_time)
+
+[...]
+
+#fuente: https://3mw.albert-rapp.de/p/creating-word-docs-with-r
