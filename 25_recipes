@@ -1,4 +1,6 @@
-0.0 Environment
+######################################
+#  0.0 Environment
+######################################
 Clear console
   Ctrl + L
 List all variables in the environment
@@ -9,6 +11,11 @@ Remove all variables
 R\win-library\3.3.3
   update.packages(checkBuilt=TRUE, ask=FALSE)
   install.packages("Rcrawler")
+
+  install.packages("installr")
+  library(installr)
+  updateR()
+
 Random Sample
   v1 <- c(1,2,3,4,5)
   v2 <- c(6,7,8,9,10)
