@@ -1,1 +1,103 @@
+---
+title: "Manipulate and clean your data in R with the dplyr package"
+author: "Francisco J. Pesante Gonzalez"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#  Manipulate and clean your data in R with the dplyr package 
+
+*Installing packages*
+```{r echo=TRUE}
+#install.packages("tidyverse")
+library(tidyverse)
+view(starwars)
+#source: https://www.youtube.com/watch?v=uoqFm1Jyyvw
+```
+
+*Selecting variables*
+```{r echo=TRUE}
+starwars %>% 
+  select(name, species, contains("color")) %>% 
+  head(10)
+# ??select()
+## contains(); starts_with(); ends_with(); all_off(); any_of(); one_of(); everything(); num_range(); matches()
+```
+
+*Filter variables*
+```{r echo=TRUE}
+starwars %>% 
+  select(name, height, species, eye_color) %>% 
+  filter(species == "Human" &
+           height < 200 &
+           eye_color %in% c("blue","brown")) %>% 
+  head(10)
+```
+
+*Mutate*
+```{r echo=TRUE}
+starwars %>% 
+  select(name, height, mass, species) %>% 
+  mutate(height = height/100) %>% 
+  head(10)
+```
+
+*Convert centimeters to feet and inches*
+```{r}
+# Función para convertir cm a pies y pulgadas
+cm_to_feet_inches <- function(cm) {
+  total_inches <- cm / 2.54
+  feet <- floor(total_inches / 12)
+  inches <- round(total_inches %% 12, 2)
+  return(paste(feet, "pies", inches, "pulgadas"))
+}
+
+# Ejemplo de uso de la función
+altura_cm <- 170
+altura_ft_in <- cm_to_feet_inches(altura_cm)
+altura_ft_in
+```
+
+
+*Arrange*
+```{r}
+msleep %>% 
+  select(genus, order, sleep_total) %>% 
+  arrange(sleep_total) %>% #smallest to largest
+  head(10)
+```
+
+*Arrange Descending*
+```{r}
+msleep %>% 
+  select(genus, order, sleep_total) %>% 
+  arrange(-sleep_total) %>% #largest to smallest
+  head(10)
+```
+
+*Recode*
+```{r}
+starwars %>% 
+  select(name, contains("color"), species) %>% 
+  mutate(species = recode(species,
+                          "Droid" = "Robot")) %>% 
+  head(10)
+```
+
+*Summarise*
+```{r}
+starwars %>% 
+  select(sex, height, mass) %>% 
+  filter(sex == "male" | sex == "female") %>% #| or
+  mutate(height = height/100) %>% #from cm to meters
+  drop_na() %>% 
+  group_by(sex) %>% #groping variables
+  summarise("Average height" = (mean(height)), #summary tables
+            "Average mass" = mean(mass))
+```
+
 
