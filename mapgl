@@ -1,0 +1,5 @@
+install.packages("mapgl")
+library(mapgl)
+mapboxgl()
+
+#https://www.linkedin.com/posts/walkerke_rstats-genai-activity-7277812030361743360-c9Qa?utm_source=share&utm_medium=member_desktop
