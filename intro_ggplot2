@@ -1,0 +1,162 @@
+<pre  style="font-family:arial;font-size:12px;border:1px dashed #CCCCCC;width:99%;height:500px;overflow:auto;background:#f0f0f0;;background-image:URL(https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEioQnWdqp_vP8NPTOXAbVP-vR57MhJcY6EeOZrxToDvX_tHTHk4XMBatphK-fUR6F1Se7Sfn5z0Ps9pV6eme4bz4cHep-sfdsM7-qhx-Tbfuoa-pTlJ2TynXwSzDnN34aurZSXcB7bJ4h-s/s320/codebg.gif);padding:0px;color:#000000;text-align:left;line-height:20px;"><code style="color:#000000;word-wrap:normal;"> Personalización de gráficos en ggplot2   
+ #########################  
+ library(tidyverse)  
+ data("economics")  
+ #########################  
+ ggplot(economics, aes(psavert)) +  
+  geom_boxplot()  
+ ggplot(economics, aes(x = date, y = psavert)) +  
+  geom_boxplot()  
+ economics$decade &lt;- as.factor(format(economics$date, "%Y")) %&gt;%   
+  substr(1,3) %&gt;% paste0("0s")  
+ ggplot(economics, aes(x = decade, y = psavert)) +  
+  geom_boxplot()  
+ #########################  
+ ggplot(economics, aes(x = decade, y = psavert, color = decade)) +  
+  geom_boxplot() +  
+  labs(title = "Distribucion de la tasa de ahorro personal por décadas (1960-2010)",  
+     x = "Decadas",  
+     y = "Tasa de ahorro personal") +  
+  theme_minimal()  
+ #########################  
+ ggplot(economics, aes(x = decade, y = psavert, color = decade)) +  
+  geom_boxplot(show.legend = FALSE) +  
+  labs(title = "Distribucion de la tasa de ahorro personal por décadas (1960-2010)",  
+     x = "Decadas",  
+     y = "Tasa de ahorro personal") +  
+  theme_minimal()  
+ ########################  
+ ggplot(economics, aes(psavert)) +  
+  geom_bar() +   
+  labs(title = "Distribucion de la tasa de ahorro personal por décadas (1960-2010)",  
+     x = "Decadas",  
+     y = "Frecuencia") +  
+  theme_minimal()  
+ ########################  
+ ggplot(economics, aes(x = unemploy, y = psavert)) +  
+  geom_point() +  
+  labs(title = "Relación entre desempleo y la tasa de ahorro personal",  
+     x = "Numero de desempleados (miles)",  
+     y = "Tasa de ahorro personal") +  
+  theme_minimal()  
+ ########################  
+ ggplot(economics, aes(x = unemploy, y = psavert, color = decade)) +  
+  geom_point() +  
+  labs(title = "Relación entre desempleo y la tasa de ahorro personal",  
+     x = "Numero de desempleados (miles)",  
+     y = "Tasa de ahorro personal") +  
+  theme_minimal()  
+ ########################  
+ ggplot(economics, aes(x = unemploy, y = psavert, color = decade)) +  
+  geom_line() +  
+  geom_smooth(method = "lm", se = TRUE, aes(group =1), color = "black", linetype = "dashed") +  
+  labs(title = "Relación entre desempleo y la tasa de ahorro personal",  
+     x = "Numero de desempleados (miles)",  
+     y = "Tasa de ahorro personal",  
+    color = "Decada") +  
+  theme_minimal()  
+ model &lt;-lm(psavert~unemploy, data = economics)  
+ summary(model)  
+ ###################################  
+ ggplot(economics, aes(x = decade, y = psavert)) +  
+  geom_boxplot() +  
+  labs(title = "Relación entre desempleo y la tasa de ahorro personal",  
+     x = "Numero de desempleados (miles)",  
+     y = "Tasa de ahorro personal",  
+     color = "Decada") +  
+  theme_minimal()  
+ ####################################  
+ ggplot(economics, aes(x = uempmed, y = psavert, color = decade)) +  
+  geom_point() +  
+  geom_smooth(method = "lm", se = TRUE, aes(group =1), color = "black", linetype = "dashed") +  
+  labs(title = "Relación entre duracion de desempleo y la tasa de ahorro personal",  
+     x = "Mediana de duracion de desempleo (semanas)",  
+     y = "Tasa de ahorro personal") +  
+  theme_minimal() +   
+  theme(legend.position = c(.85,.75))  
+ # STARWARS  
+ ggplot(starwars, aes(x = species))+   
+  geom_bar()  
+ ggplot(starwars, aes(x = species))+   
+  geom_bar() +  
+  labs(title = "Numero de personajes por especie",  
+     x = "Especie",  
+     y = "Numero de personajes") +  
+  theme_minimal() +  
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))  
+ #######################  
+ sorted_starwars &lt;- starwars %&gt;%   
+  group_by(species) %&gt;%   
+  summarize(count = n()) %&gt;%   
+  ungroup() %&gt;%   
+  arrange(desc(count))  
+ ggplot(sorted_starwars, aes(x = reorder(species, -count), y = count))+   
+  geom_bar(stat = "identity") +  
+  labs(title = "Numero de personajes por especie",  
+     x = "Especie",  
+     y = "Numero de personajes") +  
+  theme_minimal() +  
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))  
+ #################  
+ ggplot(starwars, aes(x = height))+   
+  geom_histogram(binwidth = 10, fill = "green", color = "black") +  
+  labs(title = "Distribucion de la altura de los personajes",  
+     x= "Altura (cm)",  
+    y = "Frecuencia") +  
+  theme_minimal()  
+ #################  
+ ggplot(starwars, aes(x = height, fill = sex))+   
+  geom_histogram(binwidth = 10) +  
+  labs(title = "Distribucion de la altura de los personajes",  
+     x= "Altura (cm)",  
+     y = "Frecuencia") +  
+  theme_minimal()  
+ #################  
+ ggplot(starwars, aes(x = height, y = mass))+   
+  geom_point() +  
+  labs(title = "Relación entre altura y masa de los personajes",  
+     x= "Altura (cm)",  
+     y = "Masa (kg)") +  
+  theme_minimal()  
+ ######################  
+ ggplot(starwars, aes(x = sex, y = height))+   
+  geom_boxplot() +  
+  labs(title = "Distribución de altura de los personajes por sexo",  
+     x= "Sexo",  
+     y = "Altura (cm)") +  
+  theme_minimal()  
+ ######################  
+ starwars_modified &lt;- starwars %&gt;%   
+  mutate(sex = fct_recode(sex,  
+              "Femenino" = "female",  
+              "Masculino" = "male",  
+              "Hermafrodita" = "hermaphroditic",  
+              "Ninguno" = "none",  
+              "NA" = "NA")  
+      )  
+ ggplot(starwars_modified, aes(x=sex, y=height)) +  
+  geom_boxplot() +   
+  labs(title = "Distribucion de la altura de los personajes por sexo",  
+     x = "Sexo",  
+     y = "Altura (cm)") +  
+  theme_minimal()  
+ )  
+ ggplot(starwars, aes(x = sex, y = height))+   
+  geom_boxplot() +  
+  labs(title = "Distribución de altura de los personajes por sexo",  
+     x= "Sexo",  
+     y = "Altura (cm)") +  
+  theme_minimal()  
+ ####################  
+ ggplot(starwars_modified, aes(x=sex, y=height)) +  
+  geom_boxplot() +   
+  labs(title = "Distribucion de la altura de los personajes por sexo",  
+     x = "Sexo",  
+     y = "Altura (cm)") +  
+  theme(text = element_text(family = "serif"),  
+     plot.title = element_text(family = "serif", size = 16, face = "bold"),  
+     axis.text.x = element_text(family = "serif")  
+  )  
+  theme_minimal()  
+</code></pre>
+<!--source: https://codeformatter.blogspot.com/-->
