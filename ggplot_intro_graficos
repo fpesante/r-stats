@@ -1,0 +1,706 @@
+###########################################################
+#    SEMANA 1. VISUALIZACION Y EL CUARTETO DE ANSCOMBE    #
+###########################################################
+
+#library(tidyverse)
+# REFERENCIAS:
+# https://gist.github.com/ericbusboom/b2ac1d366c005cd2ed8c
+# https://en.wikipedia.org/wiki/Anscombe%27s_quartet
+
+anscombe <- read.csv("C:/Users/francisco.pesante/OneDrive - Instituto de Estadisticas de Puerto Rico/Documents/2025/01-programas/02-academia-2024-2025-sem2/ggplot/01/anscombes.csv")
+
+head(anscombe)
+tail(anscombe)
+
+# Filtro de conjuntos de datos
+dataset1 <- filter(anscombe, dataset == "1")
+dataset2 <- filter(anscombe, dataset == "2")
+dataset3 <- filter(anscombe, dataset == "3")
+dataset4 <- filter(anscombe, dataset == "4")
+
+# Media de x
+mean(dataset1$x)
+mean(dataset2$x)
+mean(dataset3$x)
+mean(dataset4$x)
+# Media de y
+mean(dataset1$y)
+mean(dataset2$y)
+mean(dataset3$y)
+mean(dataset4$y)
+
+# Varianza x
+var(dataset1$x)
+var(dataset2$x)
+var(dataset3$x)
+var(dataset4$x)
+# Varianza y 
+var(dataset1$y) %>% round(1) 
+var(dataset2$y) %>% round(1)
+var(dataset3$y) %>% round(1)
+var(dataset4$y) %>% round(1)
+
+# Correlacion x y
+cor(dataset1$x,dataset1$y) %>% round(2)
+cor(dataset2$x,dataset2$y) %>% round(2)
+cor(dataset3$x,dataset3$y) %>% round(2)
+cor(dataset4$x,dataset4$y) %>% round(2)
+
+# 
+
+model <- lm(anscombe$y ~ anscombe$x)
+intercept <- coef(model)[1]
+slope <- coef(model)[2]
+
+#########################
+
+ggplot(anscombe, aes(x, y)) +
+  geom_point()
+
+ggplot(anscombe, aes(x, y, color = dataset)) +
+  geom_point()
+
+ggplot(dataset1, aes(x, y)) +
+  geom_point()
+
+ggplot(dataset2, aes(x, y)) +
+  geom_point()
+
+ggplot(dataset3, aes(x, y)) +
+  geom_point()
+
+ggplot(dataset4, aes(x, y)) +
+  geom_point()
+
+
+ggplot(anscombe, aes(x = x, y = y, color = factor(dataset))) +
+  geom_point() +
+  facet_wrap(~ dataset, ncol = 2) +
+  labs(title = "Cuarteto de Anscombe", x = "x", y = "y") +
+  theme_minimal()
+
+ggplot(anscombe, aes(x = x, y = y, color = factor(dataset))) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) + # Add a Regression Line to Each Facet
+  facet_wrap(~ dataset, ncol = 2) +
+  labs(title = "Cuarteto de Anscombe (linea regresion lineal)", x = "x", y = "y") +
+  theme_minimal()
+
+#################################
+#    SEMANA 2. INTRO GGPLOT2    #
+#################################
+---
+title: "guion-semana-02"
+author: "Francisco Pesante"
+date: "`r Sys.Date()`"
+output: html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## INSTALACION ##
+```{r}
+#install.packages("ggplot2")
+#library(ggplot2)
+install.packages("tidyverse") #preferidas por incluir ggplot2 y cualquier otra dependencia en otros paquetes.
+#Los paquetes son colecciones de funciones, datos y código compilado de R en un formato bien definido. 
+library(tidyverse) #El directorio donde se almacenan los paquetes se llama biblioteca (libraries).
+```
+
+## IV. Generar gráficos básicos 
+
+El paquete ggplot2 te permite establecer y personalizar los segmentos de la visualización gráfica. Estos incluyen:
+
++ Datos
+
+El primer paso es conectar los datos que se van a representar.
+```{r eval=FALSE, include=FALSE}
+data("economics")
+ggplot(economics) #datos = el conjunto de datos a representar
+#describir variables que contiene
+```
+
+
++ Estética 
+
+Incluye las variables en arreglo de x y, color, tamaño, forma, relleno, entre otros.
+```{r eval=FALSE, include=FALSE}
+ggplot(economics, aex(x, y))
+```
+
+
+
++ Geometria
+```{r eval=FALSE, include=FALSE}
+geom_bar() #graficos de barra
+geom_point() #diagrama de dispersion
+geom_line() #grafico de linea
+geom_histogram() #histograma
+geom_boxplot() #grafico de cajas
+
+ggplot(datos, aex(x,y)) +
+  geom()
+
+# una variable continua :
+geom_density () # gráfico de densidad
+geom_histogram () # diagrama de histograma
+geom_area () # parcela de área
+geom_boxplot () # diagrama de caja
+
+# Para una variable discreta o categórica:
+geom_bar () # diagrama de barras
+
+# Para dos variables:
+geom_point () # diagrama de dispersión
+geom_smooth () # agregar una línea suavizada como una línea de regresión
+geom_line () # diagrama lineal que conecta observaciones, ordenado por x
+geom_boxplot () # diagrama de caja en grupos
+geom_bar () # diagrama de barras en grupos
+
+#Referencia: Package index https://ggplot2.tidyverse.org/reference/
+```                  
+
+
+```{r economics bar}
+library(tidyverse) #dplyr & ggplot
+data(economics)
+
+ggplot(economics, aes(psavert)) + 
+geom_bar()
+```
+
+
+```{r economics point}
+# diagrama dispersion}
+library(tidyverse)
+data("economics")
+
+ggplot(economics, aes(x = date, y = psavert)) + #variables de fecha y ahorro (personal savings rate)
+  geom_point()
+
+# GRAFICOS DE DISPERSION ##
+## Visualizacion bidimensional (x [predictora] y) en puntos
+## Representa relacion de 2 variables
+## Se puede integrar otros factores?
+## Permite ver correlacion entre variables (alta, baja; fuerte o debil; lineal o inversa)
+```
+
+
+```{r economics line}
+ggplot(economics, aes(x = date, y = psavert)) + 
+geom_line()
+```
+
+```{r economics histogram}
+ggplot(economics, aes(psavert)) + 
+geom_histogram()
+#geom_histogram(bins=200)
+```
+
+```{r economics boxplot}
+ggplot(economics, aes(psavert)) + 
+geom_boxplot()
+##########
+economics$decade <- as.factor(format(economics$date, "%Y")) %>% substr(1, 3) %>% paste0("0s")
+
+ggplot(economics, aes(x = decade, y = psavert)) +
+  geom_boxplot()
+```
+
+## EJERCICIOS CUANTITATIVO - CUALITATIVO ##
+data("starwars")
+#describir variables que contiene
+
+```{r conjunto de datos starwars}
+library(tidyverse)
+data("starwars")
+```
+
+```{r starwars bar}
+data(starwars)
+# cuantitativo
+ggplot(starwars, aes(height)) +
+  geom_bar()
+# cualitativo
+ggplot(starwars, aes(sex)) +
+  geom_bar()
+
+ggplot(starwars, aes(gender)) +
+  geom_bar()
+```
+
+```{r starwars point}
+ggplot(starwars, aes(x = height, y = mass)) +
+  geom_point()
+```
+
+```{r starwars line, eval=FALSE, include=FALSE}
+no contamos con serie de tiempo
+```
+
+
+```{r starwars histogram}
+ggplot(starwars, aes(x = height)) +
+  geom_histogram()
+
+ggplot(starwars, aes(x = mass)) +
+  geom_histogram()
+
+ggplot(starwars, aes(x = birth_year)) +
+  geom_histogram()
+```
+
+```{r starwars boxplot}
+ggplot(starwars, aes(x = gender, y = height)) +
+  geom_boxplot()
+```
+
+
+## EJERCICIOS CUANTITATIVO - TABULACION CRUZADA ##
+```{r Poblacion PR 1950 - 2020, eval=FALSE, include=FALSE}
+#library(tidyverse)
+
+Poblacion_1950_2020 <- read.csv("~/2025/01-programas/02-academia-2024-2025-sem2/ggplot/02/Poblacion_1950_2020.csv")
+View(Poblacion_1950_2020)
+
+
+pobPR_1950_2020 <- read.csv("~/2025/01-programas/02-academia-2024-2025-sem2/ggplot/02/pobPR_1950_2020.csv")
+colnames(pobPR_1950_2020) <- c("Municipio","1950","1960","1970","1980","1990","2000","2010","	2020")
+View(pobPR_1950_2020)
+
+#geom_bar()
+#geom_point()
+#geom_line()
+#geom_histogram()
+#geom_boxplot()
+
+# Transformar a formato largo
+pr1950_2020_l <- pobPR_1950_2020 %>%
+  pivot_longer(cols = -Municipio, names_to = "Año", values_to = "Poblacion") %>%
+  mutate(
+    Año = as.integer(Año),
+    Poblacion = as.numeric(gsub(",", "", Poblacion))
+  )
+
+
+ggplot(pr1950_2020_l, aes(x = Año, y = Poblacion)) + 
+  geom_line()
+
+ggplot(pr1950_2020_l, aes(Poblacion)) + 
+  geom_bar()
+
+ggplot(pr1950_2020_l, aes(x = Año, y = Poblacion)) + 
+  geom_point()
+
+ggplot(pr1950_2020_l, aes(Poblacion)) + 
+  geom_histogram()
+
+ggplot(pr1950_2020_l, aes(x = Año, y = Poblacion)) + 
+  geom_boxplot()
+
+ggplot(pr1950_2020_l, aes(x = factor(Año), y = Poblacion)) + 
+  geom_boxplot()
+
+ggplot(pr1950_2020_l, aes(x = factor(Año), y = Poblacion)) + 
+  geom_boxplot(outlier.shape = NA) + 
+  scale_y_continuous(
+    limits = c(0, 75000),
+    labels = scales::label_number(scale = 1e-3)  # convierte a millones
+  )
+```
+
+
+<!--
+Codigo: https://chat.inceptionlabs.ai/c/6dc31943-7d27-4747-9cb2-0e5a61c27bd9
+
+Referencias:
+•	[Wickham, H. (2010) ggplot2: Elegant Graphics for Data Analysis.] (https://ggplot2-book.org/)
+•	[Chang, W. (2018). R graphics cookbook: practical recipes for visualizing data. O'Reilly Media.](https://r-graphics.org/)
+•	[Unwin, A. (2015). Graphical data analysis with R (Vol. 27). CRC Press.](http://www.gradaanwr.net/)-->
+
+########################################
+#    SEMANA 3. PERSONALIZAR GGPLOT2    #
+########################################
+---
+title: "guion-semana-02"
+author: "Francisco Pesante"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# IV.  PERSONALIZAR LOS GRAFICOS
+
+## ECONOMICS
+
+La semana pasada exploramos cómo modificar los datos de referencia, de manera que pudieramos generar una visualizacion mas reveladora del tema que estamos estudiando (en nuestro ejemplo, la tasa de ahorro personal).
+```{r economics boxplot decada}
+library(tidyverse)
+data("economics")
+
+ggplot(economics, aes(psavert)) + 
+geom_boxplot()
+
+ggplot(economics, aes(x= date, y = psavert)) + 
+geom_boxplot()
+
+economics$decade <- as.factor(format(economics$date, "%Y")) %>% substr(1, 3) %>% paste0("0s")
+
+ggplot(economics, aes(x = decade, y = psavert)) +
+  geom_boxplot()
+```
+
+Esta semana vamos a comenzar a elaborar en el manejo de datos y añadir elementos al grafico de tasa de ahorro personal.
+
+```{r economics, geom_boxplot personalizado}
+ggplot(economics, aes(x = decade, y = psavert, color = decade)) + #se anade color
+  geom_boxplot() +
+  labs(title = "Distribución de la tasa de ahorro personal por decadas (1960 - 2010)",
+       x = "Decadas",
+       y = "Tasa de ahorro personal") +
+  theme_minimal()
+```
+
+```{r economics, geom_boxplot personalizado sin leyenda}
+ggplot(economics, aes(x = decade, y = psavert, color = decade)) +
+  geom_boxplot(show.legend = FALSE) + #eliminamos la leyenda
+  labs(title = "Distribución de la tasa de ahorro personal por decadas (1960 - 2010)",
+       x = "Decadas",
+       y = "Tasa de ahorro personal") +
+  theme_minimal()
+```
+
+*Frecuencia de las tasas de ahoro personal*
+```{r economics$psavert geom_bar personalizado}
+library(tidyverse)
+#library(dplyr)
+#library(ggplot2)
+
+# Cargar el dataset economics
+data(economics)
+
+# Convertir la columna date a factor para agrupar por año
+#economics$year <- as.factor(format(economics$date, "%Y"))
+
+
+# Crear el gráfico de barras
+ggplot(economics, aes(x = psavert)) +
+  geom_bar() +
+  labs(title = "Distribución de frecuencia de la tasa de ahorro personal",
+       x = "Tasa de ahorro personal",
+       y = "Frecuencia") +
+  theme_minimal()
+```
+
+Crea un gráfico de dispersión que muestre la relación entre el desempleo y la tasa de ahorro personal.
+
+```{r economics, geom_point personalizado}
+ggplot(economics, aes(x = unemploy, y = psavert)) +
+  geom_point() +
+  labs(title = "Relación entre desempleo y la tasa de ahorro personal",
+       x = "Numero de Desempleo",
+       y = "Tasa de ahoro") +
+  theme_minimal()
+```
+
+```{r economics, geom_point color}
+ggplot(economics, aes(x = unemploy, y = psavert, color = decade)) +
+  geom_point() +
+  labs(title = "Relación entre desempleo y la tasa de ahorro personal",
+       x = "Numero de Desempleo",
+       y = "Tasa de ahoro") +
+  theme_minimal()
+```
+
+```{r economics, geom_point color lm, decade}
+
+#economics$decade <- as.factor(format(economics$date, "%Y")) %>% substr(1, 3) %>% paste0("0s")
+
+
+ggplot(economics, aes(x = unemploy, y = psavert, color = decade)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, aes(group = 1), color = "black", linetype = "dashed") + # Added regression line
+  labs(title = "Relación entre desempleo y la tasa de ahorro personal",
+       x = "Numero de Desempleo",
+       y = "Tasa de Ahorro",
+       color = "Década") + # Updated legend title for 'decade'
+  theme_minimal()
+```
+
+Es necesario determinar el R^2 realizando lo siguiente: 
+```{r r cuadrado mediante modelo de regresion}
+# Fit the linear model
+model <- lm(psavert ~ unemploy, data = economics)
+
+# View the regression coefficients
+summary(model)
+
+#General Guidelines (with strong caveats):
+
+# 0.0 - 0.25 (0-25%): Very weak or no linear relationship explained by the model. May be acceptable in exploratory social science research if predictors are significant.
+# 0.25 - 0.50 (25-50%): Weak to moderate. In social sciences, this can often be quite meaningful.
+# 0.50 - 0.75 (50-75%): Moderate to strong. This is often considered a good fit in many applied fields.
+# 0.75 - 1.00 (75-100%): Strong to very strong. Expected in fields with precise measurements. Values extremely close to 1 (e.g., >0.95) in complex real-world data might sometimes suggest issues like overfitting or data leakage.
+```
+
+
+```{r geom point color lm, tema o estilo modificado}
+ggplot(economics, aes(x = unemploy, y = psavert, color = decade)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE, aes(group = 1), color = "black", linetype = "dashed") + # Added regression line
+  labs(title = "Relación entre desempleo y la tasa de ahorro personal",
+       x = "Numero de Desempleo",
+       y = "Tasa de Ahorro",
+       color = "Década") + # Updated legend title for 'decade'
+ theme()
+# theme_minimal()
+#  theme_gray()
+#   theme_bw()
+#  theme_linedraw()
+# theme_light()
+# theme_dark()
+# theme_classic()
+# theme_void()
+# theme_test()
+
+# Referencias:
+# https://ggplot2.tidyverse.org/reference/ggtheme.html
+#https://yutannihilation.github.io/allYourFigureAreBelongToUs/
+```
+
+```{r geom_line, color lm, tema o estilo modificado}
+ggplot(economics, aes(x = unemploy, y = psavert, group = decade)) + #color =
+  geom_line() +
+  geom_smooth(method = "lm", se = FALSE, aes(group = 1), color = "black", linetype = "dashed") + # Added regression line
+  labs(title = "Relación entre desempleo y la tasa de ahorro personal",
+       x = "Numero de Desempleo",
+       y = "Tasa de Ahorro",
+       color = "Década") + # Updated legend title for 'decade'
+ theme_minimal()
+```
+
+```{r economics geom_boxplot}
+ggplot(economics, aes(x = decade, y = psavert, )) +
+  geom_boxplot() +
+  labs(title = "Relación entre desempleo y la tasa de ahorro personal",
+       x = "Numero de Desempleo",
+       y = "Tasa de Ahorro",
+       color = "Década") + # Updated legend title for 'decade'
+ theme_minimal()
+```
+
+
+```{r economics geom_point}
+ggplot(economics, aes(x = uempmed, y = psavert)) + # median duration of unemployment
+  geom_point() +
+  labs(title = "Relación entre desempleo y la tasa de ahorro personal",
+       x = "Semanas de Desempleo",
+       y = "Tasa de ahorro") +
+  theme_minimal()
+```
+
+
+
+```{r economics geom_point, smooth}
+ggplot(economics, aes(x = uempmed, y = psavert, color = decade)) + # median duration of unemployment
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE, aes(group = 1), color = "black", linetype = "dashed") +
+  labs(title = "Relación entre desempleo y la tasa de ahorro personal",
+       x = "Semanas de Desempleo",
+       y = "Tasa de ahorro") +
+  theme_minimal()
+```
+
+```{r economics, geom_point, legend position}
+ggplot(economics, aes(x = uempmed, y = psavert, color = decade)) + # median duration of unemployment
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE, aes(group = 1), color = "black", linetype = "dashed") +
+  labs(title = "Relación entre desempleo y la tasa de ahorro personal",
+       x = "Semanas de Desempleo",
+       y = "Tasa de ahoro",
+       color = "Decadas") + #cambiar label de leyenda
+  theme_minimal() +
+  #theme(legend.position = "none") #"inside", "left", "right", "top", "bottom", "none"
+  theme(legend.position = c(0.85, 0.75)) # (85%left, 75%bottom)
+```
+
+
+```{r eval=FALSE, include=FALSE}
+library(tidyverse)
+data("economics")
+
+economics <- economics %>%
+  mutate(year = as.numeric(format(date, "%Y"))) #incluyendo columna de ano
+
+yearly_economics <- economics %>%
+  group_by(year) %>%
+  summarize(
+    psavert_yearly = mean(psavert)
+  )
+
+merged_data <- economics %>%
+  left_join(yearly_economics, by = "year")
+
+ggplot(merged_data, aes(x = date, y = psavert)) +
+  geom_line() +
+  labs(title = "Yearly personal savings rate Over Time",
+       x = "Date",
+       y = "personal savings rate",
+       color = "Data Type") +
+  theme_minimal()
+
+```
+
+
+## STARWARS
+```{r starwars, geom_bar()}
+ggplot(starwars, aes(x = species)) +
+  geom_bar() +
+  labs(title = "Número de Personajes por Especie",
+       x = "Especie",
+       y = "Número de Personajes") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+```{r starwars, geom_bar() sorted}
+sorted_starwars <- starwars %>%
+  group_by(species) %>%
+  summarize(count = n()) %>%
+  ungroup() %>%
+  arrange(desc(count))
+
+# Create the bar plot with the sorted data
+ggplot(sorted_starwars, aes(x = reorder(species, -count), y = count)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Número de Personajes por Especie",
+       x = "Especie",
+       y = "Número de Personajes") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+```{r starwars, geom_histogram()}
+ggplot(starwars, aes(x = height)) +
+  geom_histogram(binwidth = 10, fill = "green", color = "black") +
+  labs(title = "Distribución de la Altura de los Personajes",
+       x = "Altura (cm)",
+       y = "Frecuencia") +
+  theme_minimal()
+```
+
+```{r starwars, geom_histogram() stacked bars}
+ggplot(starwars, aes(x = height, fill = sex)) +
+  geom_histogram(binwidth = 10) +
+  labs(title = "Distribución de la Altura de los Personajes",
+       x = "Altura (cm)",
+       y = "Frecuencia") +
+  theme_minimal()
+```
+
+```{r starwars, geom_point}
+ggplot(starwars, aes(x = height, y = mass)) +
+  geom_point() +
+  labs(title = "Relación entre Altura y Peso de los Personajes",
+       x = "Altura (cm)",
+       y = "Peso (kg)") +
+  theme_minimal()
+```
+
+
+
+```{r starwars, geom_boxplot()}
+ggplot(starwars, aes(x = sex, y = height)) +
+  geom_boxplot() +
+  labs(title = "Distribución de la Altura de los Personajes por Sexo",
+       x = "Sexo",
+       y = "Altura (cm)") +
+  theme_minimal()
+```
+```{r starwars, geom_boxplot() recoded}
+library(tidyverse)
+
+starwars_modified <- starwars %>%
+  mutate(
+    # Use fct_recode to change specific factor levels/character strings  ??fct_recode
+    sex = fct_recode(sex,
+                     "femenino" = "female",
+                     "masculino" = "male",
+                     "hermafrodita" = "hermaphroditic",
+                     "ninguno" = "none",
+                     "NA" = "NA"
+                     )
+    # Note: fct_recode will keep other values (like 'none', 'hermaphroditic', NA) as they are
+  )
+
+# Now use the modified data for plotting
+ggplot(starwars_modified, aes(x = sex, y = height)) +
+  geom_boxplot() +
+  labs(title = "Distribución de la Altura de los Personajes por Sexo", # Changed Género to Sexo
+       x = "Sexo",
+       y = "Altura (cm)") +
+  theme_minimal()
+```
+
+```{r starwars, geom_boxplot() recoded, edited font type & size}
+library(tidyverse)
+
+starwars_modified2 <- starwars %>%
+  mutate(
+    # Use fct_recode to change specific factor levels/character strings  ??fct_recode
+    sex = fct_recode(sex,
+                     "Femenino" = "female",
+                     "Masculino" = "male",
+                     "Hermafrodita" = "hermaphroditic",
+                     "Ninguno" = "none",
+                     "NA" = "NA"
+                     )
+    # Note: fct_recode will keep other values (like 'none', 'hermaphroditic', NA) as they are
+  )
+
+# Now use the modified data for plotting
+ggplot(starwars_modified2, aes(x = sex, y = height)) +
+  geom_boxplot() +
+  labs(title = "Distribución de la Altura de los Personajes por Sexo", # Changed Género to Sexo
+       x = "Sexo",
+       y = "Altura (cm)") +
+  theme(text = element_text(family = "serif"),
+    plot.title = element_text(family = "serif", size = 14, face = "bold"),
+    axis.text.x = element_text(family = "serif") #There are only three fonts that are guaranteed to work everywhere: “sans”, “serif”, or “mono”. Ref: https://ggplot2.tidyverse.org/articles/ggplot2-specs.html#font-size
+  )
+```
+
+
+############################
+#    SEMANA 4. ESQUISSE    #
+############################
+install.packages("esquisse")
+library(tidyverse)
+library(esquisse)
+#install.packages("plotly")
+#library(plotly)
+#Try online : https://dreamrs.shinyapps.io/esquisse/
+write.csv(economics, "economics.csv", row.names = FALSE)
+#getwd()
+
+# repasar videos de semana 2 y 3 y repetir en esquisse.
+data("economics")
+
+esquisse::esquisser(economics)
+
+############
+data("starwars")
+esquisse::esquisser(starwars)
+#write_csv(starwars, "starwars_data.csv")
+#getwd()
+############
+En este video se explica qu� es Esquisse y las dos formas de poder acceder a este recurso. 
+
+Se incluye el enlace del portal de Esquisse https://dreamrs.shinyapps.io/esquisse/
