@@ -1,0 +1,50 @@
+library(tidyverse)
+install.packages("plotly")
+
+library(plotly)
+################
+e <- ggplot(economics, aes(x = date, y = psavert)) + 
+  geom_line()
+
+ggplotly(e)
+
+################
+p<- ggplot(mpg, aes(x = displ, y = hwy, color = class)) + geom_point()
+ggplotly(p)
+
+m <- highlight_key(mpg)
+p <- ggplot(m, aes(displ, hwy)) + geom_point()
+gg <- highlight(ggplotly(p), "plotly_selected")
+crosstalk::bscols(gg, DT::datatable(m))
+
+##################
+# Referencia: https://www.maximaformacion.es/blog-ciencia-datos/como-hacer-que-tus-graficos-cobren-vida-con-solo-una-linea-de-codigo/
+# https://vimeo.com/324366759
+##########################
+# Extensiones destacadas #
+##########################
+
+# 📐 ggrepel → Evita superposición de etiquetas
+library(ggrepel)
+ggplot(data, aes(x, y, label = nombre)) +
+  geom_point() +
+  geom_text_repel() 
+
+# 🎨 ggthemes → Temas profesionales (Excel, Economist, Stata…)
+library(ggthemes)
+ggplot(data, aes(x, y)) + 
+  geom_line() + 
+  theme_economist() # Estilo revista The Economist
+
+# 📈 gganimate → Gráficos animados
+library(gganimate)
+ggplot(data, aes(x, y, frame = año)) +
+  geom_point() +
+  transition_time(año) # ¡Crea un GIF!
+
+# 🗺 ggmap → Mapas con estilo ggplot
+library(ggmap)
+qmplot(lon, lat, data = datos, color = valor) # Mapas fácilmente
+
+# Fuente: https://www.linkedin.com/posts/rosanaferrero_rstats-dataviz-ggplot2-activity-7343156183676911616-mRtN?
+# Referencia: https://exts.ggplot2.tidyverse.org/gallery/
